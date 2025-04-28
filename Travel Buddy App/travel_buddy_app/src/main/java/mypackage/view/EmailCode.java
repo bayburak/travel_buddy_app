@@ -1,5 +1,5 @@
 package mypackage.view;
 
-public class emailcode {
+public class EmailCode {
     
 }
