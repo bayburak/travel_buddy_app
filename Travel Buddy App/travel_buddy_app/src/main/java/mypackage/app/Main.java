@@ -1,17 +1,31 @@
 package mypackage.app;
 
-import java.io.IOException;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 
+import mypackage.service.MapService;
 
 public class Main {
-    
+
     
 
-    public static void main( String[] args ) throws IOException
+    public static void main( String[] args )
     {
-        System.out.println( "Hello World!" );
-
-        FirebaseInit.initialize();
+        JFrame frame = new JFrame();
+        frame.setDefaultCloseOperation(3);
+        frame.setSize(900, 900);
+        try{
+            JPanel mapPanel = MapService.getMapPanel();
+            frame.add(mapPanel);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        frame.setVisible(true);
+        
     }
+
+
+
+
 }
