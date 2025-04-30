@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public class User {
 
-
+    private int userID;
     private String nameSurname;
     private String password;
     private String e_mail;
@@ -24,9 +24,12 @@ public class User {
     private ArrayList<User> following = new ArrayList<>();
     private ArrayList <User> followers = new ArrayList<>();
 
-    private BufferedImage profilePic;
+    //private BufferedImage profilePic;
 
 
+    public User(){
+
+    }
 
     public User(String nameSurname, String password, String e_mail, String username) throws IOException{
         this.nameSurname = nameSurname;
@@ -36,7 +39,7 @@ public class User {
         this.aboutMe = "";
 
         
-        this.profilePic = ImageIO.read(new File("")); //TODO default image ekle
+        //this.profilePic = ImageIO.read(new File("")); //TODO default image ekle
         
     }
 
@@ -108,9 +111,13 @@ public class User {
     /*                                          */
 
     public String getNameSurname(){ return nameSurname;}
-    public String gwtPassword(){ return password;}
+    public String getPassword(){ return password;}
     public String getE_mail(){ return e_mail;}
     public String getUsername(){ return username;}
     public String getAboutMe(){ return aboutMe;}
+    public ArrayList<JournalEntry> getEntries() { return entries;}
+    public ArrayList<JournalEntry> getFavorites() { return favorites;}
+    public ArrayList<User> getFollowing() { return following;}
+    public ArrayList<User> getFollowers() { return followers;}
 
 }

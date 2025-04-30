@@ -1,5 +1,6 @@
 package mypackage.view;
 
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -72,4 +73,4 @@ public class emailCode extends JFrame implements ActionListener{
     public void actionPerformed(ActionEvent e) {
         throw new UnsupportedOperationException("Unimplemented method 'actionPerformed'");
     }
-}
+
