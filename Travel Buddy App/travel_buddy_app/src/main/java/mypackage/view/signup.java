@@ -16,7 +16,7 @@ public class signup extends JFrame implements ActionListener{
     static Color button = new Color(55,127,188);
     static Font font = new Font("Arial",Font.PLAIN,24);
 
-    public SignUp() {
+    public signup() {
         this.visible = false;
 
         setTitle("Email");
