@@ -15,7 +15,6 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
 import org.jxmapviewer.JXMapViewer;
-import org.jxmapviewer.input.CenterMapListener;
 import org.jxmapviewer.input.PanMouseInputListener;
 import org.jxmapviewer.input.ZoomMouseWheelListenerCursor;
 import org.jxmapviewer.viewer.DefaultTileFactory;
@@ -48,17 +47,18 @@ public class MapService {
             for (JsonNode feature : features) {
                 String name = feature.get("properties").get("name").asText();
                 JsonNode geometry = feature.get("geometry");
+                String number = feature.get("properties").get("number").asText();
                 String type = geometry.get("type").asText();
 
                 if (type.equals("Polygon")) {
                     JsonNode coordinates = geometry.get("coordinates").get(0);
-                    City city = createProvinceFromCoordinates(coordinates, name, geometryFactory);
+                    City city = createProvinceFromCoordinates(coordinates, name, number,geometryFactory);
                     cities.add(city);
                 } else if (type.equals("MultiPolygon")) {
                     JsonNode multiCoordinates = geometry.get("coordinates");
                     for (JsonNode polygonCoords : multiCoordinates) {
                         JsonNode coordinates = polygonCoords.get(0); // Take outer shell
-                        City province = createProvinceFromCoordinates(coordinates, name, geometryFactory);
+                        City province = createProvinceFromCoordinates(coordinates, name, number,geometryFactory);
                         cities.add(province);
                     }
                 }
@@ -67,7 +67,7 @@ public class MapService {
         return cities;
     }
 
-    private static City createProvinceFromCoordinates(JsonNode coordinatesArray, String name, GeometryFactory geometryFactory) {
+    private static City createProvinceFromCoordinates(JsonNode coordinatesArray, String name, String ID,  GeometryFactory geometryFactory) {
         List<Coordinate> coordinatesList = new ArrayList<>();
         for (JsonNode point : coordinatesArray) {
             double lon = point.get(0).asDouble();
@@ -80,7 +80,7 @@ public class MapService {
         LinearRing shell = geometryFactory.createLinearRing(coordinates);
         Polygon polygon = geometryFactory.createPolygon(shell, null);
 
-        return new City(name, polygon);
+        return new City(name, polygon, ID);
     }
 
     public static JPanel getMapPanel() throws IOException{

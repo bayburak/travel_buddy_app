@@ -13,13 +13,15 @@ public class City {
     
     public static List<City> allCities;
 
+    private String cityID;
     private String name;
     private int entryCount;
     private Polygon polygon;
 
-    public City(String name, Polygon polgon){
+    public City(String name, Polygon polgon, String ID){
         this.name = name;
         this.polygon = polgon;
+        this.cityID = ID;
         this.entryCount = 0;
     }
 
@@ -34,6 +36,8 @@ public class City {
 
     public String getName(){ return name;}
     public Polygon getPolygon(){ return polygon;}
+    public String getCityID(){ return cityID;}
+    public int getEntryCount(){ return entryCount;}
 
 
 }

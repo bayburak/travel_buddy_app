@@ -3,34 +3,32 @@ package mypackage.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.imageio.ImageIO;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 
 public class User {
 
-    private int userID;
+    private String userID;
     private String nameSurname;
     private String password;
     private String e_mail;
     private String username;
     private String aboutMe;
 
-    private ArrayList<JournalEntry> entries = new ArrayList<>();
-    private ArrayList<JournalEntry> favorites = new ArrayList<>();
-    private ArrayList<User> following = new ArrayList<>();
-    private ArrayList <User> followers = new ArrayList<>();
+    //Stores IDs of the objects
+    private List<String> entries = new ArrayList<>();
+    private List<String> saved = new ArrayList<>();
+    private List<String> following = new ArrayList<>();
+    private List <String> followers = new ArrayList<>();
 
-    //private BufferedImage profilePic;
+    private String profilePicURL;
 
-
+    //required gor firebase
     public User(){
 
     }
-
+    //TODO generate id
     public User(String nameSurname, String password, String e_mail, String username) throws IOException{
         this.nameSurname = nameSurname;
         this.password = password;
@@ -52,7 +50,7 @@ public class User {
         return null;
     }
 
-    public static User getUserByUsername(String username) {
+    public static User getUserByID(String UserID) {
         // Implementation here
         return null;
     }
@@ -63,61 +61,94 @@ public class User {
     /*              INTANCE METHODS             */
     /*                                          */
 
+    public boolean deleteUser(String userID){
+        return false;
+    }
+
     public boolean updateUserProfile(String nameSurname, String aboutMe, String username, String profilePic) {
         // Implementation here
         return false;
     }
 
     public boolean followUser(User targetUser) {
-        // Implementation here
+        
         return false;
     }
 
     public boolean unfollowUser(User targetUser) {
-        // Implementation here
+        
         return false;
     }
 
-    public void updatePassword(String newPassword) {
-        // Implementation here
+    public List<String> getFollowersIDs(){
+        return null;
+    }
+    public List<String> getFollowingIDs(){
+        return null;
     }
 
-    public boolean addToFavorites(JournalEntry journalEntry) {
-        // Implementation here
+    public boolean addToSaved(JournalEntry journalEntry) {
+        
         return false;
     }
 
-    public boolean removeFromFavorites(JournalEntry journalEntry) {
-        // Implementation here
+    public boolean removeFromSaved(JournalEntry journalEntry) {
+        
         return false;
     }
 
+    public List<JournalEntry> getSavedEntries(){
+        return null;
+    }
+
+    //JournalEntryservice
     public List<JournalEntry> getUserEntries() {
-        // Implementation here
+        
         return null;
     }
-
+    //JournalEntryService
     public List<JournalEntry> getPublicEntries() {
-        // Implementation here
+        
         return null;
     }
+    
 
 
     
 
     
     /*                                          */
-    /*              GETTER METHODS              */
+    /*          GETTER, SETTER METHODS          */
     /*                                          */
 
-    public String getNameSurname(){ return nameSurname;}
-    public String getPassword(){ return password;}
-    public String getE_mail(){ return e_mail;}
-    public String getUsername(){ return username;}
-    public String getAboutMe(){ return aboutMe;}
-    public ArrayList<JournalEntry> getEntries() { return entries;}
-    public ArrayList<JournalEntry> getFavorites() { return favorites;}
-    public ArrayList<User> getFollowing() { return following;}
-    public ArrayList<User> getFollowers() { return followers;}
+    public String getUserID() { return userID; }
+    public void setUserID(String userID) { this.userID = userID; }
+
+    public String getNameSurname() { return nameSurname; }
+    public void setNameSurname(String nameSurname) { this.nameSurname = nameSurname; }
+
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+
+    public String getE_mail() { return e_mail; }
+    public void setE_mail(String e_mail) { this.e_mail = e_mail; }
+
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
+
+    public String getAboutMe() { return aboutMe; }
+    public void setAboutMe(String aboutMe) { this.aboutMe = aboutMe; }
+
+    public List<String> getEntries() { return entries; }
+    public void setEntries(List<String> entries) { this.entries = entries; }
+
+    public List<String> getSaved() { return saved; }
+    public void setSaved(List<String> saved) { this.saved = saved; }
+
+    public List<String> getFollowing() { return following; }
+    public void setFollowing(List<String> following) { this.following = following; }
+
+    public List<String> getFollowers() { return followers; }
+    public void setFollowers(List<String> followers) { this.followers = followers; }
 
 }
