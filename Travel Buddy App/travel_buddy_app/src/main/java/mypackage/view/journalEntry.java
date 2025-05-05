@@ -26,7 +26,7 @@ import javax.swing.JTextField;
  * TODO3:Submit button
  */
 
-public class journalEntryPanel extends JPanel {
+public class journalEntry extends JPanel {
     Color lightGray = new Color(217, 217, 217);
     Color darkBlue = new Color(34, 86, 153);
     
