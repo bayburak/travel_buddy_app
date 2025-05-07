@@ -4,7 +4,6 @@ package mypackage.model;
 import java.io.IOException;
 import java.util.List;
 
-import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Polygon;
 
 import mypackage.service.MapService;
@@ -26,7 +25,7 @@ public class City {
     }
 
     public static void initializeCitys() throws IOException{
-        allCities = MapService.loadProvincesFromGeoJson(new GeometryFactory());
+        allCities = MapService.readCities();
     }
 
     public List<JournalEntry> getEntriesbyCity(){
