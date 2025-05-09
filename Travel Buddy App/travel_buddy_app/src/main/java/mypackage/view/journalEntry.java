@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import mypackage.model.*;
 
 /*
  * TODO1:Return button
@@ -27,10 +28,12 @@ import javax.swing.JTextField;
  */
 
 public class journalEntry extends JPanel {
+    City city;
     Color lightGray = new Color(217, 217, 217);
     Color darkBlue = new Color(34, 86, 153);
     
-    public journalEntryPanel() {
+    public journalEntry(City city) {
+        this.city=city;
         setLayout(new BorderLayout(0, 30));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         setBackground(Color.WHITE);
@@ -62,7 +65,7 @@ public class journalEntry extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 /*
-                 * TODO <3
+                 * TODO <3 returns to mainMap 
                  */
             }
         });
@@ -108,7 +111,8 @@ public class journalEntry extends JPanel {
         panel.add(Box.createVerticalStrut(5));
 
         // City Text Field
-        JTextField cityField = new JTextField();
+        JTextField cityField = new JTextField(city.getName());
+        cityField.setEditable(false);
         cityField.setBackground(lightGray);
         cityField.setFont(new Font("Arial", Font.PLAIN, 18));
         cityField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 80));
@@ -157,7 +161,9 @@ public class journalEntry extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e){
                 /*
-                 * TODO <3
+                 * TODO <3 opens photoUploader frame 
+                 * this frame has a getFileURL() method returns String
+                 * keep this string and use it to create journal
                  */
             }
         });
@@ -171,7 +177,8 @@ public class journalEntry extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e){
                 /*
-                 * TODO !!Dont forget checking submit private comboBox and if city is valid or not <3
+                 * TODO creates journal according to texts and adds it to citie's journals and user's journals
+                 * !!Dont forget checking submit private comboBox
                  */
             }
         });
@@ -182,3 +189,4 @@ public class journalEntry extends JPanel {
         return panel;
     }
 }
+

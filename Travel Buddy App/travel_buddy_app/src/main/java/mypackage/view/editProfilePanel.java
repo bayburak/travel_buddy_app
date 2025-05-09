@@ -10,7 +10,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-
+import mypackage.model.*;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -23,6 +23,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+
 /*
  * TODO1:Return button
  * TODO2:Delete Account button
@@ -32,11 +33,13 @@ import javax.swing.JTextField;
  */
 
 public class editProfilePanel extends JPanel {
-    Color darkBlue=new Color(34,86,153);
-    Color lightBlue=new Color(176,204,242);
-    Color bioColor=new Color(220,224,247);
+    private User user;
+    private Color darkBlue=new Color(34,86,153);
+    private Color lightBlue=new Color(176,204,242);
+    private Color bioColor=new Color(220,224,247);
 
-    public editProfilePanel(){
+    public editProfilePanel(User user){
+        this.user=user;
 
         setLayout(new BorderLayout(0, 30));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -82,7 +85,7 @@ public class editProfilePanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e){
                 /*
-                 * TODO <3
+                 * TODO <3 returns to profile frame
                  */
             }
         });
@@ -106,7 +109,7 @@ public class editProfilePanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e){
                 /*
-                 * TODO <3
+                 * TODO <3 // maybe we can add a pop-up that asks user if they are sure (optional -_-)
                  */
             }
         });
@@ -125,7 +128,7 @@ public class editProfilePanel extends JPanel {
         // Profil picture
         BufferedImage bufferedImage=null;
         try {
-            bufferedImage = ImageIO.read(new File("finalProfile.jpeg"));
+            bufferedImage = ImageIO.read(new File(user.getProfilePicURL()));
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -148,7 +151,8 @@ public class editProfilePanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e){
                 /*
-                 * TODO <3
+                 * TODO <3 // you should open photouploader frame and change users profile url if there is a photo in uploaader frame
+                 * There is a getFileURL() method which returns String in photoUploader frame class
                  */
             }
         });
@@ -158,7 +162,7 @@ public class editProfilePanel extends JPanel {
         // Name and surname 
         JPanel namePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 25, 0)); 
         namePanel.setBackground(lightBlue);
-        JTextField nameSurname = new JTextField("Name Surname");
+        JTextField nameSurname = new JTextField(user.getNameSurname());
         nameSurname.setFont(new Font("Arial", Font.PLAIN, 20));
         nameSurname.setForeground(Color.GRAY);
         nameSurname.setEditable(true);
@@ -171,7 +175,7 @@ public class editProfilePanel extends JPanel {
         // Username 
         JPanel usernamePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 25, 0));
         usernamePanel.setBackground(lightBlue);
-        JTextField username = new JTextField("Username");
+        JTextField username = new JTextField(user.getUsername());
         username.setFont(new Font("Arial", Font.PLAIN, 20));
         username.setPreferredSize(new Dimension(380, 30));
         username.setForeground(Color.GRAY);
@@ -184,7 +188,7 @@ public class editProfilePanel extends JPanel {
         // e-mail 
         JPanel emailPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 25, 0));
         emailPanel.setBackground(lightBlue);
-        JTextField e_mail = new JTextField("E-mail");
+        JTextField e_mail = new JTextField(user.getE_mail());
         e_mail.setFont(new Font("Arial", Font.PLAIN, 20));
         e_mail.setPreferredSize(new Dimension(380, 30));
         e_mail.setForeground(Color.GRAY);
@@ -205,7 +209,7 @@ public class editProfilePanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e){
                 /*
-                 * TODO <3
+                 * TODO <3 opens a newPassword frame and changes password if it is valid (if we can complete validator in time)
                  */
             }
         });
@@ -244,40 +248,7 @@ public class editProfilePanel extends JPanel {
         panel.add(headerPanel);
 
         // about me text area
-        JTextArea aboutMeTextArea = new JTextArea("Our Friendly Potato Love\n" + //
-                        "By Travel Buddy App\n" + //
-                        "A Love Song For Buddy\n" + //
-                        "This is a stock cover image. We regularly add new custom covers so come back tomorrow to see if we've made one for you.\n" + //
-                        "\n" + //
-                        "\n" + //
-                        "This one's for you Mr Traveller!\n" + //
-                        "\n" + //
-                        "My love for you is like the most Friendly Potato,\n" + //
-                        "Your face reminds me of Funny Gorilla,\n" + //
-                        "Together, we are like Pizza and Ketchup.\n" + //
-                        "\n" + //
-                        "Oh darling Buddy,\n" + //
-                        "My Friendly Potato,\n" + //
-                        "My Funny Apple,\n" + //
-                        "The perfect companion to my Pizza soul.\n" + //
-                        "\n" + //
-                        "Rose are red,\n" + //
-                        "Ocean are blue,\n" + //
-                        "I like Stars,\n" + //
-                        "But not as much as I love Making love with you!\n" + //
-                        "\n" + //
-                        "Oh darling Buddy,\n" + //
-                        "Your foot are like Cool Buddy on a summer day,\n" + //
-                        "You're like the most Hot Traveler to ever walk Bilkent.\n" + //
-                        "\n" + //
-                        "Your Funny Gorill face,\n" + //
-                        "Your Ketchup soul,\n" + //
-                        "Your Cool foot,\n" + //
-                        "Your Hot Traveler being...\n" + //
-                        "\n" + //
-                        "How could I look at another when our Friendly Potato love is so strong?\n" + //
-                        "\n" + //
-                        "I love you Mr Traveller!");
+        JTextArea aboutMeTextArea = new JTextArea(user.getAboutMe());
         aboutMeTextArea.setBackground(bioColor);
         aboutMeTextArea.setEditable(true); 
         aboutMeTextArea.setLineWrap(true); 
@@ -309,7 +280,7 @@ public class editProfilePanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 /*
-                 * TODO <3
+                 * TODO <3 updates user's information based on texts in JTexts and returns to profile frame
                  */
             }
         });

@@ -1,7 +1,7 @@
 package mypackage.view;
 import javax.imageio.ImageIO;
 import javax.swing.*;
-
+import mypackage.model.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,10 +16,12 @@ import java.io.IOException;
  */
 
 public class profile extends JPanel {
+    private User user;
     private Color darkBlue=new Color(34,86,153);
     private Color bioColor=new Color(221,224,247);
 
-    public profilePanel() {
+    public profile(User user) {
+        this.user=user;
         setLayout(new BorderLayout(0, 30));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         setBackground(Color.WHITE);
@@ -82,7 +84,7 @@ public class profile extends JPanel {
         // Profil picture
         BufferedImage bufferedImage = null;
         try {
-            bufferedImage = ImageIO.read(new File("finalProfile.jpeg"));
+            bufferedImage = ImageIO.read(new File(user.getProfilePicURL()));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -95,20 +97,20 @@ public class profile extends JPanel {
         informationPanel.add(Box.createVerticalStrut(20));
     
         // Name and surname
-        JLabel nameSurname = new JLabel("Name Surname");
+        JLabel nameSurname = new JLabel(user.getNameSurname());
         nameSurname.setAlignmentX(Component.CENTER_ALIGNMENT); 
         informationPanel.add(nameSurname);
         informationPanel.add(Box.createVerticalStrut(10));
     
         // Username
-        JLabel username = new JLabel("Username");
+        JLabel username = new JLabel(user.getUsername());
         username.setForeground(Color.GRAY);
         username.setAlignmentX(Component.CENTER_ALIGNMENT); 
         informationPanel.add(username);
         informationPanel.add(Box.createVerticalStrut(10));
     
         // Followers and following
-        JLabel followersFollowing = new JLabel("0 Followers   0 Following");
+        JLabel followersFollowing = new JLabel(user.getFollowers().size()+" Followers   "+ user.getFollowing().size()+ " Following");
         followersFollowing.setForeground(Color.GRAY);
         followersFollowing.setAlignmentX(Component.CENTER_ALIGNMENT); 
         informationPanel.add(followersFollowing);
@@ -163,40 +165,7 @@ public class profile extends JPanel {
         panel.add(headerPanel);
 
         // about me text area
-        JTextArea aboutMeTextArea = new JTextArea("Our Friendly Potato Love\n" + //
-                        "By Travel Buddy App\n" + //
-                        "A Love Song For Buddy\n" + //
-                        "This is a stock cover image. We regularly add new custom covers so come back tomorrow to see if we've made one for you.\n" + //
-                        "\n" + //
-                        "\n" + //
-                        "This one's for you Mr Traveller!\n" + //
-                        "\n" + //
-                        "My love for you is like the most Friendly Potato,\n" + //
-                        "Your face reminds me of Funny Gorilla,\n" + //
-                        "Together, we are like Pizza and Ketchup.\n" + //
-                        "\n" + //
-                        "Oh darling Buddy,\n" + //
-                        "My Friendly Potato,\n" + //
-                        "My Funny Apple,\n" + //
-                        "The perfect companion to my Pizza soul.\n" + //
-                        "\n" + //
-                        "Rose are red,\n" + //
-                        "Ocean are blue,\n" + //
-                        "I like Stars,\n" + //
-                        "But not as much as I love Making love with you!\n" + //
-                        "\n" + //
-                        "Oh darling Buddy,\n" + //
-                        "Your foot are like Cool Buddy on a summer day,\n" + //
-                        "You're like the most Hot Traveler to ever walk Bilkent.\n" + //
-                        "\n" + //
-                        "Your Funny Gorill face,\n" + //
-                        "Your Ketchup soul,\n" + //
-                        "Your Cool foot,\n" + //
-                        "Your Hot Traveler being...\n" + //
-                        "\n" + //
-                        "How could I look at another when our Friendly Potato love is so strong?\n" + //
-                        "\n" + //
-                        "I love you Mr Traveller!");
+        JTextArea aboutMeTextArea = new JTextArea(user.getAboutMe());
         aboutMeTextArea.setBackground(bioColor);
         aboutMeTextArea.setEditable(false); 
         aboutMeTextArea.setLineWrap(true); 
