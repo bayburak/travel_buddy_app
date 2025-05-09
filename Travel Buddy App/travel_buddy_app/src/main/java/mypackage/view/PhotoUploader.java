@@ -15,6 +15,7 @@ public class PhotoUploader extends JFrame {
     private JLabel dropArea;
     private BufferedImage uploadedImage;
     private JButton uploadButton;
+    private String fileURL;
 
     public PhotoUploader() {
         setTitle("Upload photo (jpg, png, gif, bmp)");
@@ -81,6 +82,7 @@ public class PhotoUploader extends JFrame {
                             File file = fileList.get(0);
                             if (isImageFile(file)) {
                                 uploadedImage = ImageIO.read(file);
+                                fileURL = file.getAbsolutePath(); 
                                 dropArea.setText(file.getName());
                                 uploadButton.setEnabled(true);
                                 
@@ -120,4 +122,9 @@ public class PhotoUploader extends JFrame {
     public BufferedImage getUploadedImage() {
         return uploadedImage;
     }
+
+    public String getFileURL() {
+        return fileURL;
+    }
 }
+
