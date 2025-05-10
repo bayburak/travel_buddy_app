@@ -108,9 +108,20 @@ public class editProfilePanel extends JPanel {
         deleteAccount.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e){
-                /*
-                 * TODO <3 // maybe we can add a pop-up that asks user if they are sure (optional -_-)
-                 */
+                Object[] options = {"Yes", "No"};
+                int option = JOptionPane.showOptionDialog(
+                    null,
+                    "Do you want to delete your account?",
+                    "",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,          
+                    options,         
+                    options[1]       
+                );
+                if(option==JOptionPane.YES_OPTION){
+                    //TODO Delete account and return to sign page
+                }
             }
         });
         panel.add(deleteAccount);
