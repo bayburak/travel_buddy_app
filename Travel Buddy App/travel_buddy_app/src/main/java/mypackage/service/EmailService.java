@@ -1,109 +1,80 @@
 package mypackage.service;
-import java.util.Properties;
 
-import jakarta.mail.Authenticator;
-import jakarta.mail.Message;
-import jakarta.mail.PasswordAuthentication;
-import jakarta.mail.Session;
-import jakarta.mail.Transport;
+import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import mypackage.model.User;
 
-
-public class EmailService {
-
-    private static final String FROM_EMAIL = "travelBuddies@gmail.com"; //To be changed
-    private static final String FROM_NAME = "Travel Buddies Team";
-    private static final String PASSWORD = "password"; //To be changed
+import java.util.Properties;
 
 
-    public static boolean sendPasswordResetEmail(User user, String token) 
+public class EmailService
+{
+
+    private static final String FROM_EMAIL = "travelbuddyfam@gmail.com";
+    private static final String PASSWORD   = "klgnzzeojgokgcpc";
+    private static final String FROM_NAME  = "Travel Buddies Team";
+
+    public static boolean sendPasswordResetEmail(User user, String token)
     {
-        String toEmail = user.getE_mail();
-        String name = user.getNameSurname();
-        String subject = "Reset Password Request";
-
-        String body = "Hi " + name + ",\n\n" + "We received a request to reset your password.\n" + "Use the following token to reset your password in the app:\n\n" + token + "\n\n" + "If you did not request this, you can ignore this email.\n\n" + "Thanks,\n" + "Travel Buddies";
-
-        try 
-        {
-            Properties props = new Properties();
-            props.put("mail.smtp.auth", "true");
-            props.put("mail.smtp.starttls.enable", "true");
-            props.put("mail.smtp.host", "smtp.gmail.com");
-            props.put("mail.smtp.port", "587");
-
-            Session session = Session.getInstance(props, new Authenticator() 
-            {
-                protected PasswordAuthentication getPasswordAuthentication() 
-                {
-                    return new PasswordAuthentication(FROM_EMAIL, PASSWORD);
-                }
-            });
-
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(FROM_EMAIL, FROM_NAME));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
-            message.setSubject(subject);
-            message.setText(body);
-
-            Transport.send(message);
-
-            return true;
-
-        } 
-        catch (Exception e) 
-        {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public static boolean verifyEmailToken(User user, String token, String inputToken) 
-    {
-        return inputToken != null && inputToken.equals(token);
+        return send(user.getE_mail(), "Reset Password Request", "Hi " + user.getNameSurname() + ",\n\n" + "Use this code to reset your password: " + token + "\n\n" + "If you didn't request this, ignore the mail.\n\nTravel Buddies");
     }
 
     public static boolean sendWelcomeEmail(User user)
     {
-        String toEmail = user.getE_mail();
-        String name = user.getNameSurname();
-        String subject = "Welcome to Travel Buddies!";
-        
-        String body = "Hi " + name + ",\n\n" + "Welcome to Travel Buddies! We're excited to have you on board.\n" + "Start exploring and connecting with travelers from around the world.\n\n" + "Safe travels,\n" + "The Travel Buddies Team";
-    
-        try 
+        return send(user.getE_mail(), "Welcome to Travel Buddies!", "Hi " + user.getNameSurname() + ",\n\nWelcome aboard!\n\nTravel Buddies Team");
+    }
+
+    public static boolean verifyEmailToken(User user, String token, String input)
+    {
+        return input != null && input.equals(token);
+    }
+
+    private static boolean send(String to, String subject, String body)
+    {
+        try
         {
-            Properties props = new Properties();
-            props.put("mail.smtp.auth", "true");
-            props.put("mail.smtp.starttls.enable", "true");
-            props.put("mail.smtp.host", "smtp.gmail.com");
-            props.put("mail.smtp.port", "587");
-    
-            Session session = Session.getInstance(props, new Authenticator() 
-            {
-                protected PasswordAuthentication getPasswordAuthentication() 
-                {
-                    return new PasswordAuthentication(FROM_EMAIL, PASSWORD);
-                }
-            });
-    
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(FROM_EMAIL, FROM_NAME));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
-            message.setSubject(subject);
-            message.setText(body);
-    
-            Transport.send(message);
-    
+            Session session = createSession();
+            Message msg = new MimeMessage(session);
+            msg.setFrom(new InternetAddress(FROM_EMAIL, FROM_NAME));
+            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+            msg.setSubject(subject);
+            msg.setText(body);
+            Transport.send(msg);
+            System.out.println("Email sent successfully to " + to);
             return true;
-    
-        } 
-        catch (Exception e) 
+        }
+        catch (AuthenticationFailedException afe)
+        {
+            System.err.println("SMTP Auth failed. Check email and password.");
+        }
+        catch (MessagingException me)
+        {
+            System.err.println("SMTP error: " + me.getMessage());
+        }
+        catch (Exception e)
         {
             e.printStackTrace();
-            return false;
         }
+        return false;
+    }
+
+    private static Session createSession()
+    {
+        Properties p = new Properties();
+        p.put("mail.smtp.auth", "true");
+        p.put("mail.smtp.starttls.enable", "true");
+        p.put("mail.smtp.ssl.protocols", "TLSv1.2");
+        p.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+        p.put("mail.smtp.host", "smtp.gmail.com");
+        p.put("mail.smtp.port", "587");
+
+        return Session.getInstance(p, new Authenticator()
+        {
+            @Override protected PasswordAuthentication getPasswordAuthentication()
+            {
+                return new PasswordAuthentication(FROM_EMAIL, PASSWORD);
+            }
+        });
     }
 }
