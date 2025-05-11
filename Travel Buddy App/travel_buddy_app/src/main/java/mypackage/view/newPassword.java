@@ -36,7 +36,7 @@ public class newPassword extends JFrame implements ActionListener {
         this.add(txtCode);
 
         //Confirm button
-        RoundedButton confirm = new JButton("Confirm",20);
+        RoundedButton confirm = new RoundedButton("Confirm",20);
         confirm.setBackground(button);
         confirm.setForeground(Color.WHITE);
         confirm.setFont(new Font("Arial",Font.PLAIN,20));
