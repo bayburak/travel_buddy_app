@@ -2,12 +2,16 @@ package mypackage.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
+import mypackage.service.JournalDatabaseService;
+import mypackage.service.UserDatabaseService;
 
 import java.io.IOException;
 
 
 public class User {
+
 
     private String userID;
     private String nameSurname;
@@ -24,11 +28,11 @@ public class User {
 
     private String profilePicURL;
 
-    //required gor firebase
+    //required for firebase
     public User(){
 
     }
-    //TODO generate id
+    //TODO generate id //TODO handle profile pic
     public User(String nameSurname, String password, String e_mail, String username) throws IOException{
         this.nameSurname = nameSurname;
         this.password = password;
@@ -36,23 +40,20 @@ public class User {
         this.username = username;
         this.aboutMe = "";
 
-        
-        //this.profilePic = ImageIO.read(new File("")); //TODO default image ekle
-        
+        UserDatabaseService.incrementNumberOfUsers();
+        this.userID = UserDatabaseService.NumberOfUsers; 
     }
+
 
     /*                                          */
     /*              STATIC METHODS              */
     /*                                          */
 
-    public static User createUser(String username, String nameSurname, String email, String password, String aboutMe, String profilePic) {
-        // Implementation here
-        return null;
-    }
+    
 
-    public static User getUserByID(String UserID) {
-        // Implementation here
-        return null;
+    public static User getUserByID(String UserID) throws InterruptedException, ExecutionException {
+        return UserDatabaseService.getUserByID(UserID);
+        
     }
 
 
@@ -61,56 +62,68 @@ public class User {
     /*              INTANCE METHODS             */
     /*                                          */
 
-    public boolean deleteUser(String userID){
-        return false;
+    public void addUsertoDatabase() {
+        UserDatabaseService.createUser(this); 
     }
 
-    public boolean updateUserProfile(String nameSurname, String aboutMe, String username, String profilePic) {
-        // Implementation here
-        return false;
+    public void deleteUser(){
+        UserDatabaseService.deleteUser(this.getUserID());
     }
 
-    public boolean followUser(User targetUser) {
+    public void updateUserProfile(String nameSurname, String aboutMe, String username, String e_mail) {
+        this.setAboutMe(aboutMe);
+        this.setE_mail(e_mail);
+        this.setNameSurname(nameSurname);
+        this.setUsername(username);
         
-        return false;
+        UserDatabaseService.updateUserProfile(this);
     }
 
-    public boolean unfollowUser(User targetUser) {
+    public void followUser(String targetUserID) {
+        UserDatabaseService.followUser(this.getUserID(), targetUserID);
         
-        return false;
     }
 
-    public List<String> getFollowersIDs(){
-        return null;
-    }
-    public List<String> getFollowingIDs(){
-        return null;
-    }
-
-    public boolean addToSaved(JournalEntry journalEntry) {
+    public void unfollowUser(String targetUserID) {
+        UserDatabaseService.unfollowUser(this.getUserID(), targetUserID);
         
-        return false;
     }
 
-    public boolean removeFromSaved(JournalEntry journalEntry) {
+    public void addToSaved(String EntryID) {
+        UserDatabaseService.saveEntryForUser(this.getUserID(), EntryID);
         
-        return false;
     }
 
-    public List<JournalEntry> getSavedEntries(){
-        return null;
+    public void removeFromSaved(String EntryID) {
+        UserDatabaseService.unsaveEntryForUser(this.getUserID(), EntryID);
+        
     }
 
-    //JournalEntryservice
-    public List<JournalEntry> getUserEntries() {
-        
-        return null;
+    public List<User> getFollowersObjectArray() throws InterruptedException, ExecutionException{
+        return UserDatabaseService.getFollowers(this.getUserID());
     }
-    //JournalEntryService
-    public List<JournalEntry> getPublicEntries() {
-        
-        return null;
+    public List<User> getFollowingsObjextArray() throws InterruptedException, ExecutionException{
+        return UserDatabaseService.getFollowing(this.userID);
     }
+
+    
+
+    public List<JournalEntry> getSavedEntries() throws InterruptedException, ExecutionException{
+        return JournalDatabaseService.getSavedEntriesForUser(this.getUserID());
+    }
+
+    
+    public List<JournalEntry> getUserEntries() throws InterruptedException, ExecutionException {
+        
+        return JournalDatabaseService.getEntriesByUser(this.userID);
+    }
+  
+    public List<JournalEntry> getPublicEntries() throws InterruptedException, ExecutionException {
+        
+        return JournalDatabaseService.getPublicEntries(this.getUserID());
+    }
+
+    
     
 
 
@@ -150,5 +163,13 @@ public class User {
 
     public List<String> getFollowers() { return followers; }
     public void setFollowers(List<String> followers) { this.followers = followers; }
+
+    public String getPhotoURL() { return profilePicURL;}
+    public void setPhotoURL(String newURL) { this.profilePicURL = newURL;}
+
+
+    public String toString(){
+        return this.getNameSurname() + " "+this.getUsername() + " " + this.getUserID();
+    }
 
 }

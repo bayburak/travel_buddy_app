@@ -1,5 +1,5 @@
 package mypackage.service;
-import mypackage.view.*;
+
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -131,7 +131,10 @@ public class MapService {
 
 
     public static JPanel getMapPanel() throws IOException{
-        City.initializeCitys();
+        if(City.allCities == null){
+            City.initializeCitys();
+        }
+        
 
         JXMapViewer mapViewer = new JXMapViewer();
 
@@ -195,8 +198,8 @@ public class MapService {
 
                      for (City city : City.allCities) {
                          if (city.getPolygon().contains(jPoint)) {
-                            JPanel cityPanel= new cityPanel(city);
-                            cityPanel.setLocation(e.getPoint()); //TODO check after map is done
+                             System.out.println("Clicked on " + city.getName().toUpperCase()+ " ID: " + city.getCityID());
+                             return;
                          }
                      }
                      System.out.println("Clicked outside Turkey");
@@ -207,5 +210,7 @@ public class MapService {
         });
 
         return mapViewer;
-    } 
+    }
+    
+
 }
