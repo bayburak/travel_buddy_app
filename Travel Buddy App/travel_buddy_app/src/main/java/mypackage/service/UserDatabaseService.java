@@ -215,7 +215,35 @@ public class UserDatabaseService extends DatabaseService {
         return future;
     }
     
-    //TODO Test
+    public static User getUserByUsername(String username) throws InterruptedException, ExecutionException{
+        return getuserbyusername(username).get();
+    }
+    private static CompletableFuture<User> getuserbyusername(String username){
+        
+        CompletableFuture<User> future = new CompletableFuture<>();
+    
+        database.child("users").orderByChild("username").equalTo(username).limitToFirst(1).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    
+                    User user = snapshot.getChildren().iterator().next().getValue(User.class);
+                    future.complete(user); 
+                } else {
+                    future.complete(null); 
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                future.completeExceptionally(new RuntimeException(error.getMessage())); 
+            }
+        });
+
+        return future; 
+    }
+
+    
     public static void followUser(String userId ,String otherUserId) {
   
         database.child("users").child(userId).child("following").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -305,7 +333,7 @@ public class UserDatabaseService extends DatabaseService {
     });
     }
 
-    //TODO favorites and no map
+    
     public static void saveEntryForUser(String userId, String entryId) {
         database.child("users").child(userId).child("saved").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -365,13 +393,13 @@ public class UserDatabaseService extends DatabaseService {
     }
     //Helper methodd for getFollowers
     private static CompletableFuture<List<User>> getfollowers(String userId){
-        final CompletableFuture<List<User>> future = new CompletableFuture<>();
+        CompletableFuture<List<User>> future = new CompletableFuture<>();
 
         database.child("users").child(userId).child("followers")
             .addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    final List<CompletableFuture<User>> futures = new ArrayList<>();
+                    List<CompletableFuture<User>> futures = new ArrayList<>();
     
                     for (DataSnapshot followerSnapshot : dataSnapshot.getChildren()) {
                         String followerID = followerSnapshot.getValue(String.class);
@@ -385,11 +413,11 @@ public class UserDatabaseService extends DatabaseService {
                         return;
                     }
     
-                    CompletableFuture<Void> allDoneFuture = CompletableFuture.allOf(
+                    CompletableFuture<Void> Doneall = CompletableFuture.allOf(
                             futures.toArray(new CompletableFuture[futures.size()])
                     );
     
-                    allDoneFuture.thenRun(new Runnable() {
+                    Doneall.thenRun(new Runnable() {
                         @Override
                         public void run() {
                             List<User> users = new ArrayList<User>();
@@ -431,13 +459,13 @@ public class UserDatabaseService extends DatabaseService {
     }
     //Helper fr getFollowing
     private static CompletableFuture<List<User>> getfollowing(String userId){
-        final CompletableFuture<List<User>> future = new CompletableFuture<>();
+        CompletableFuture<List<User>> future = new CompletableFuture<>();
 
         database.child("users").child(userId).child("following")
             .addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
-                    final List<CompletableFuture<User>> futures = new ArrayList<>();
+                    List<CompletableFuture<User>> futures = new ArrayList<>();
 
                     for (DataSnapshot followingSnapshot : snapshot.getChildren()) {
                         String followingID = followingSnapshot.getValue(String.class);
@@ -451,11 +479,11 @@ public class UserDatabaseService extends DatabaseService {
                         return;
                     }
 
-                    CompletableFuture<Void> allDone = CompletableFuture.allOf(
+                    CompletableFuture<Void> doneAll = CompletableFuture.allOf(
                             futures.toArray(new CompletableFuture[futures.size()])
                     );
 
-                    allDone.thenRun(new Runnable() {
+                    doneAll.thenRun(new Runnable() {
                         @Override
                         public void run() {
                             List<User> users = new ArrayList<User>();
@@ -481,8 +509,8 @@ public class UserDatabaseService extends DatabaseService {
                 }
 
                 @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    future.completeExceptionally(new RuntimeException(databaseError.getMessage()));
+                public void onCancelled(DatabaseError error) {
+                    future.completeExceptionally(new RuntimeException(error.getMessage()));
                 }
             });
 
@@ -490,7 +518,48 @@ public class UserDatabaseService extends DatabaseService {
 
     }
 
+    public static List<User> searchUsersByKeyword(String keyword) throws InterruptedException, ExecutionException {
+        return searchUsersByKeywordAsync(keyword).get();
+    }
     
+    private static CompletableFuture<List<User>> searchUsersByKeywordAsync(String keyword) {
+        CompletableFuture<List<User>> future = new CompletableFuture<>();
+    
+        database.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                List<User> matchingUsers = new ArrayList<User>();
+    
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                    User user = userSnapshot.getValue(User.class);
+    
+                    if (user != null) {
+                        String name;
+                        if (user.getNameSurname() != null) { name = user.getNameSurname().toLowerCase();} 
+                        else {name = "";}
+                        
+                        String uname;
+                        if (user.getUsername() != null) {uname = user.getUsername().toLowerCase();} 
+                        else {uname = "";}
+                        String lowerKeyword = keyword.toLowerCase();
+    
+                        if (name.contains(lowerKeyword) || uname.contains(lowerKeyword)) {
+                            matchingUsers.add(user);
+                        }
+                    }
+                }
+    
+                future.complete(matchingUsers);
+            }
+    
+            @Override
+            public void onCancelled(DatabaseError error) {
+                future.completeExceptionally(new RuntimeException(error.getMessage()));
+            }
+        });
+    
+        return future;
+    }
 
     public static void getNoOfUsersfromDatabase(){
         database.child("NumberOfUsers").addListenerForSingleValueEvent(new ValueEventListener() {
