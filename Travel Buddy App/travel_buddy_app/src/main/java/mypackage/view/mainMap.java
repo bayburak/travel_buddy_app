@@ -14,7 +14,7 @@ public class mainMap extends JPanel implements ActionListener {
     int screenWidth = screenSize.width;
     int screenHeight = screenSize.height;
 
-    public MainMap() {
+    public mainMap() {
         this.setSize(screenSize);
         this.setLayout(null);
         this.setBackground(Color.WHITE);
