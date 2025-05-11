@@ -74,7 +74,7 @@ public class login extends JFrame implements ActionListener {
         this.repaint();
 
         //Sign In Button
-        RoundedButton signIn = new JButton("Sign in",20);
+        RoundedButton signIn = new RoundedButton("Sign in",20);
         signIn.setFont(new Font("Arial", Font.PLAIN, 24));
         signIn.setForeground(Color.WHITE);
         signIn.setBackground(button);
@@ -94,7 +94,7 @@ public class login extends JFrame implements ActionListener {
         label3.setBounds(screenWidth/2-320,screenHeight-250,500,200);
         label3.setForeground(Color.WHITE);
         this.add(label3);
-        RoundedButton signUp = new JButton("Sign up",20);
+        RoundedButton signUp = new RoundedButton("Sign up",20);
         signUp.setFont(new Font("Arial", Font.PLAIN, 24));
         signUp.setForeground(Color.WHITE);
         signUp.setBackground(button);
@@ -114,7 +114,7 @@ public class login extends JFrame implements ActionListener {
         label4.setBounds(screenWidth/2-320,screenHeight-350,500,200);
         label4.setForeground(Color.WHITE);
         this.add(label4);
-        RoundedButton here = new JButton("Here",20);
+        RoundedButton here = new RoundedButton("Here",20);
         here.setFont(new Font("Arial", Font.PLAIN, 24));
         here.setForeground(Color.WHITE);
         here.setBackground(button);

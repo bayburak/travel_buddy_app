@@ -1,4 +1,4 @@
-package view;
+package mypackage.view;
 
 import java.util.Arrays;
 import javax.swing.JFrame;
@@ -16,7 +16,7 @@ public class MainViewHande {
             //Search Panel for FIND TRAVEL BUDDY
             //Creating genericUserPanels objects with user lists
             //TODO
-            FindTravelBuddy buddySearchPanel = new FindTravelBuddy(
+            findTravelbuddy buddySearchPanel = new findTravelbuddy(
                 Arrays.asList("Apple", "Banana", "Orange", "Pineapple", "Mango", "Grapes")
             );
 
@@ -25,7 +25,7 @@ public class MainViewHande {
             //Search Panel for EXPLORE
             //Creating genericEntryPanels objects with user lists
             //TODO
-            FindTravelBuddy exploreSearchPanel = new FindTravelBuddy(
+            findTravelbuddy exploreSearchPanel = new findTravelbuddy(
                 Arrays.asList("Apple", "Banana", "Orange", "Pineapple", "Mango", "Grapes")
             );
 

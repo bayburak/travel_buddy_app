@@ -84,7 +84,7 @@ public class profile extends JPanel {
         // Profil picture
         BufferedImage bufferedImage = null;
         try {
-            bufferedImage = ImageIO.read(new File(user.getProfilePicURL()));
+            bufferedImage = ImageIO.read(new File(user.getPhotoURL()));
         } catch (IOException e) {
             e.printStackTrace();
         }

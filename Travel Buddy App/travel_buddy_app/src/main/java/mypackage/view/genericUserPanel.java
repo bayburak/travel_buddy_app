@@ -5,7 +5,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class genericUserPanels extends JPanel{
+public class genericUserPanel extends JPanel{
     
     static Color blueBack = new Color(204,228,252);
     static Color blueFront = new Color(180,204,244);
@@ -14,7 +14,7 @@ public class genericUserPanels extends JPanel{
     //JournalEntry object
     //TODO
 
-    public genericUserPanels() {
+    public genericUserPanel() {
         this.setBackground(blueBack);
         //this.setSize(new Dimension(200,200));
         this.setLayout(null);
