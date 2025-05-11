@@ -57,7 +57,7 @@ public class signup extends JFrame implements ActionListener{
         this.add(txtPassword);
 
         //Create Button
-        JButton create = new JButton("Create new account");
+        RoundedButton create = new RoundedButton("Create new account",20);
         create.setBackground(button);
         create.setForeground(Color.WHITE);
         create.setFont(font);
@@ -69,21 +69,6 @@ public class signup extends JFrame implements ActionListener{
         });
         create.setBounds(100,450,500,50);
         this.add(create);
-
-        //X button
-        JButton x = new JButton("X");
-        x.setBackground(lightBlue);
-        x.setForeground(darkBlue);
-        x.setFont(new Font("Arial",Font.BOLD,30));
-        x.setBorder(null);
-        x.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // TODO
-            }
-        });
-        x.setBounds(700,0,100,50);
-        this.add(x);
 
         setVisible(visible);
     }
