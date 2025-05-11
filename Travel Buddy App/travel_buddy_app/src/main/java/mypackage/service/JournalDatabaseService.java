@@ -5,6 +5,8 @@ import java.util.List;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.Collections;
+import java.util.Comparator;
 
 import com.google.firebase.database.*;
 
@@ -167,8 +169,8 @@ public class JournalDatabaseService extends DatabaseService {
             }
             
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                future.completeExceptionally(new RuntimeException(databaseError.getMessage()));
+            public void onCancelled(DatabaseError error) {
+                future.completeExceptionally(new RuntimeException(error.getMessage()));
             }
         });
 
@@ -202,23 +204,23 @@ public class JournalDatabaseService extends DatabaseService {
                         return;
                     }
 
-                    CompletableFuture<Void> allDoneFuture = CompletableFuture.allOf(
+                    CompletableFuture<Void> doneAll = CompletableFuture.allOf(
                             futures.toArray(new CompletableFuture[futures.size()])
                     );
 
-                    allDoneFuture.thenRun(new Runnable() {
+                    doneAll.thenRun(new Runnable() {
                         @Override
                         public void run() {
                             List<JournalEntry> entries = new ArrayList<JournalEntry>();
 
                             for (CompletableFuture<JournalEntry> f : futures) {
                                 try {
-                                    JournalEntry entry = f.get(); // Safe here
+                                    JournalEntry entry = f.get(); 
                                     if (entry != null) {
                                         entries.add(entry);
                                     }
                                 } catch (Exception e) {
-                                    e.printStackTrace(); // Log and continue
+                                    e.printStackTrace(); 
                                 }
                             }
 
@@ -234,8 +236,8 @@ public class JournalDatabaseService extends DatabaseService {
                 }
 
                 @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    future.completeExceptionally(new RuntimeException(databaseError.getMessage()));
+                public void onCancelled(DatabaseError error) {
+                    future.completeExceptionally(new RuntimeException(error.getMessage()));
                 }
             });
 
@@ -259,7 +261,7 @@ public class JournalDatabaseService extends DatabaseService {
                     for (DataSnapshot savedSnapshot : dataSnapshot.getChildren()) {
                         String entryId = savedSnapshot.getValue(String.class);
                         if (entryId != null) {
-                            futures.add(getentry(entryId)); // Your method returning CompletableFuture<JournalEntry>
+                            futures.add(getentry(entryId)); 
                         }
                     }
     
@@ -268,11 +270,11 @@ public class JournalDatabaseService extends DatabaseService {
                         return;
                     }
     
-                    CompletableFuture<Void> allDoneFuture = CompletableFuture.allOf(
+                    CompletableFuture<Void> doneAll = CompletableFuture.allOf(
                             futures.toArray(new CompletableFuture[futures.size()])
                     );
     
-                    allDoneFuture.thenRun(new Runnable() {
+                    doneAll.thenRun(new Runnable() {
                         @Override
                         public void run() {
                             List<JournalEntry> entries = new ArrayList<JournalEntry>();
@@ -314,14 +316,14 @@ public class JournalDatabaseService extends DatabaseService {
         return getPublicEntriesAsync(userId).get();
     }
     
-    private static CompletableFuture<List<JournalEntry>> getPublicEntriesAsync(final String userId) {
-        final CompletableFuture<List<JournalEntry>> future = new CompletableFuture<>();
+    private static CompletableFuture<List<JournalEntry>> getPublicEntriesAsync(String userId) {
+        CompletableFuture<List<JournalEntry>> future = new CompletableFuture<>();
     
         database.child("users").child(userId).child("entries")
             .addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    final List<CompletableFuture<JournalEntry>> futures = new ArrayList<>();
+                    List<CompletableFuture<JournalEntry>> futures = new ArrayList<>();
     
                     for (DataSnapshot entrySnapshot : dataSnapshot.getChildren()) {
                         String entryId = entrySnapshot.getValue(String.class);
@@ -335,11 +337,11 @@ public class JournalDatabaseService extends DatabaseService {
                         return;
                     }
     
-                    CompletableFuture<Void> allDoneFuture = CompletableFuture.allOf(
+                    CompletableFuture<Void> doneAll = CompletableFuture.allOf(
                             futures.toArray(new CompletableFuture[futures.size()])
                     );
     
-                    allDoneFuture.thenRun(new Runnable() {
+                    doneAll.thenRun(new Runnable() {
                         @Override
                         public void run() {
                             List<JournalEntry> publicEntries = new ArrayList<JournalEntry>();
@@ -367,8 +369,8 @@ public class JournalDatabaseService extends DatabaseService {
                 }
     
                 @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    future.completeExceptionally(new RuntimeException(databaseError.getMessage()));
+                public void onCancelled(DatabaseError error) {
+                    future.completeExceptionally(new RuntimeException(error.getMessage()));
                 }
             });
     
@@ -380,13 +382,13 @@ public class JournalDatabaseService extends DatabaseService {
         return getEntriesByCityIDAsync(cityID).get();
     }
     
-    private static CompletableFuture<List<JournalEntry>> getEntriesByCityIDAsync(final String cityID) {
-        final CompletableFuture<List<JournalEntry>> future = new CompletableFuture<>();
+    private static CompletableFuture<List<JournalEntry>> getEntriesByCityIDAsync(String cityID) {
+        CompletableFuture<List<JournalEntry>> future = new CompletableFuture<>();
     
         database.child("journalEntries").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                final List<CompletableFuture<JournalEntry>> futures = new ArrayList<>();
+                List<CompletableFuture<JournalEntry>> futures = new ArrayList<>();
     
                 for (DataSnapshot entrySnapshot : snapshot.getChildren()) {
                     final String entryID = entrySnapshot.getKey();
@@ -400,11 +402,11 @@ public class JournalDatabaseService extends DatabaseService {
                     return;
                 }
     
-                CompletableFuture<Void> allDone = CompletableFuture.allOf(
+                CompletableFuture<Void> doneAll = CompletableFuture.allOf(
                         futures.toArray(new CompletableFuture[futures.size()])
                 );
     
-                allDone.thenRun(new Runnable() {
+                doneAll.thenRun(new Runnable() {
                     @Override
                     public void run() {
                         List<JournalEntry> result = new ArrayList<JournalEntry>();
@@ -416,7 +418,7 @@ public class JournalDatabaseService extends DatabaseService {
                                     result.add(entry);
                                 }
                             } catch (Exception e) {
-                                e.printStackTrace(); // log and skip problematic entry
+                                e.printStackTrace(); 
                             }
                         }
     
@@ -441,6 +443,49 @@ public class JournalDatabaseService extends DatabaseService {
     } 
 
     
+    public static List<JournalEntry> getTopFavoritedEntries() throws InterruptedException, ExecutionException {
+        return gettopfavoritedentries(10).get(); 
+    }
+    public static CompletableFuture<List<JournalEntry>> gettopfavoritedentries(int limit) {
+        CompletableFuture<List<JournalEntry>> future = new CompletableFuture<>();
+    
+        database.child("journalEntries").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                List<JournalEntry> allEntries = new ArrayList<JournalEntry>();
+    
+                for (DataSnapshot entrySnapshot : snapshot.getChildren()) {
+                    JournalEntry entry = entrySnapshot.getValue(JournalEntry.class);
+                    if (entry != null) {
+                        allEntries.add(entry);
+                    }
+                }
+    
+               
+                Collections.sort(allEntries, new Comparator<JournalEntry>() {
+                    @Override
+                    public int compare(JournalEntry entry, JournalEntry otherentry) {
+                        return Integer.compare(otherentry.getNoOfFavorites(), entry.getNoOfFavorites());
+                    }
+                });
+    
+                
+                List<JournalEntry> topEntries = new ArrayList<JournalEntry>();
+                for (int i = 0; i < Math.min(limit, allEntries.size()); i++) {
+                    topEntries.add(allEntries.get(i));
+                }
+    
+                future.complete(topEntries);
+            }
+    
+            @Override
+            public void onCancelled(DatabaseError error) {
+                future.completeExceptionally(new RuntimeException(error.getMessage()));
+            }
+        });
+    
+        return future;
+    }
 
     public static void incrementNoOfFavorites(String entryId) {
         database.child("journalEntries").child(entryId).child("noOfFavorites")

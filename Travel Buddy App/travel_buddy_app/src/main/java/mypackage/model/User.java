@@ -57,6 +57,10 @@ public class User {
         return UserDatabaseService.getUserByID(UserID);
         
     }
+    //returns null when the user des not exist
+    public static User getUserbyUsername( String username) throws InterruptedException, ExecutionException{
+        return UserDatabaseService.getUserByUsername(username);
+    }
 
     public static List<User> searchUsersByKeyword(String keyword) throws InterruptedException, ExecutionException{
         return UserDatabaseService.searchUsersByKeyword(keyword);
