@@ -1,28 +1,24 @@
 package mypackage.app;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import java.io.IOException;
 
+import java.util.concurrent.ExecutionException;
 
-import mypackage.service.MapService;
+import mypackage.service.DatabaseService;
+import mypackage.service.StorageService;
 
 public class Main {
 
-    
+  
 
-    public static void main( String[] args )
+    public static void main( String[] args ) throws IOException, InterruptedException, ExecutionException
     {
-        JFrame frame = new JFrame();
-        frame.setDefaultCloseOperation(3);
-        frame.setSize(900, 900);
-        try{
-            JPanel mapPanel = MapService.getMapPanel();
-            frame.add(mapPanel);
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-        frame.setVisible(true);
-        
+
+        DatabaseService.initialize();
+        StorageService.initialize();
+
+       
+   
     }
 
 
