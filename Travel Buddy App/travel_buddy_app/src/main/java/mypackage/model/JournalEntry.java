@@ -3,34 +3,75 @@ package mypackage.model;
 
 import java.io.File;
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+import mypackage.service.JournalDatabaseService;
 
 public class JournalEntry {
     
     private String entryID;
     private String title;
     private String content;
-    private boolean isPublic;
+
+    
+    private boolean publicEntry;
+
     private int noOfFavorites;
 
     private String cityID;
     private String creationDate;
     private String authorID;
 
-    private List<String> photos;
+    private String photoURL;
+
+    public JournalEntry(){
+
+    }
+    public JournalEntry(String title, String content, boolean isPublic, String CityID, String authorID){
+        this.title = title;
+        this.content = content;
+        this.publicEntry = isPublic;
+        this.cityID = CityID;
+        this.creationDate = CreationDate();
+        this.authorID = authorID;
+
+        JournalDatabaseService.incrementNumberOfEntries();
+        this.entryID = JournalDatabaseService.NumberOfEntries;
+
+        this.photoURL = "";
+    }
+
  
-    //TODO generate ID
+    
 
     /*                                          */
     /*              STATIC METHODS              */
     /*                                          */
-    public static JournalEntry createEntry(String title, String content, boolean isPublic, User author, String city, File photo) {
-        // Implementation here
-        return null;
+    
+
+    public static JournalEntry getJournalEntrybyID(String entryID) throws InterruptedException, ExecutionException{
+    
+        return JournalDatabaseService.getJournalEntryById(entryID);
+       
+        
     }
 
-    public static JournalEntry getJournalEntrybyID(String entryID){
-        return null;
+    public static void deleteEntry(String entryID) {
+        JournalDatabaseService.deleteJournalEntry(entryID, null);
+        
+    }
+
+    public static String CreationDate(){
+        LocalDate today = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String formattedDate = today.format(formatter);
+
+        return formattedDate;
+    }
+    public static List<JournalEntry> getEntriesByCityID(String cityID) throws InterruptedException, ExecutionException{
+        return JournalDatabaseService.getEntriesByCityID(cityID);
     }
 
     
@@ -39,6 +80,11 @@ public class JournalEntry {
     /*              INTANCE METHODS             */
     /*                                          */
     
+    public void addEntrytoDatabase() {
+        JournalDatabaseService.createJournalEntry(this);
+    }
+
+
     //TODO StorageService class
     public boolean addPhoto(File file, String fileName) {
         // Implementation here
@@ -50,15 +96,15 @@ public class JournalEntry {
         return false;
     }
 
-    public boolean updateEntry(String title, String content, boolean isPublic) {
-        // Implementation here
-        return false;
+    public void updateEntry(String title, String content, boolean isPublic) {
+        this.setTitle(title);
+        this.setContent(content);
+        this.setPublicEntry(isPublic);
+
+        JournalDatabaseService.updateJournalEntry(this);
     }
 
-    public boolean deleteEntry() {
-        // Implementation here
-        return false;
-    }
+    
 
     
 
@@ -68,7 +114,7 @@ public class JournalEntry {
     /*          GETTER, SETTER METHODS          */
     /*                                          */
 
-    public String getID() { return entryID; }
+    public String getEntryID() { return entryID; }
     public void setEntryID(String entryID) { this.entryID = entryID; }
     
     public String getTitle() { return title; }
@@ -77,18 +123,28 @@ public class JournalEntry {
     public String getContent() { return content; }
     public void setContent(String content) { this.content = content; }
     
-    public boolean isPublic() { return isPublic; }
-    public void setPublic(boolean isPublic) { this.isPublic = isPublic; }
+    
+    public boolean isPublicEntry() { return publicEntry; }
+    public void setPublicEntry(boolean publicEntry) { this.publicEntry = publicEntry; }
+    
     
     public int getNoOfFavorites() { return noOfFavorites; }
     public void setNoOfFavorites(int noOfFavorites) { this.noOfFavorites = noOfFavorites; }
     
     public String getCityID() { return cityID; }
-    public void setCity(String cityID) { this.cityID = cityID; }
+    public void setCityID(String cityID) { this.cityID = cityID; }
     
     public String getCreationDate() { return creationDate; }
-    public void setCreationDate(LocalDate creationDate) { this.creationDate = creationDate.toString(); }
+    public void setCreationDate(String creationDate) { this.creationDate = creationDate.toString(); }
     
     public String getAuthorID() { return authorID; }
-    public void setAuthor(String authorID) { this.authorID = authorID; }
+    public void setAuthorID(String authorID) { this.authorID = authorID; }
+
+    public String getPhotoURL(){ return photoURL;}
+    public void setPhotoURL(String photoURL) {this.photoURL = photoURL; }
+
+
+    public String toString(){
+        return this.title + " " + this.getContent(); 
+    }
 }
