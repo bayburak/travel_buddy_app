@@ -36,7 +36,7 @@ public class newPassword extends JFrame implements ActionListener {
         this.add(txtCode);
 
         //Confirm button
-        JButton confirm = new JButton("Confirm");
+        RoundedButton confirm = new JButton("Confirm",20);
         confirm.setBackground(button);
         confirm.setForeground(Color.WHITE);
         confirm.setFont(new Font("Arial",Font.PLAIN,20));
@@ -49,21 +49,6 @@ public class newPassword extends JFrame implements ActionListener {
         });
         confirm.setBounds(300,230,200,50);;
         this.add(confirm);
-
-        //X button
-        JButton x = new JButton("X");
-        x.setBackground(lightBlue);
-        x.setForeground(darkBlue);
-        x.setFont(new Font("Arial",Font.BOLD,30));
-        x.setBorder(null);
-        x.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // TODO
-            }
-        });
-        x.setBounds(700,0,100,50);
-        this.add(x);
 
         setVisible(visible);
     }
