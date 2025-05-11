@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import mypackage.service.JournalDatabaseService;
+import mypackage.service.StorageService;
 import mypackage.service.UserDatabaseService;
 
 import java.io.IOException;
@@ -39,6 +40,7 @@ public class User {
         this.e_mail = e_mail;
         this.username = username;
         this.aboutMe = "";
+        setDefaultPic();
 
         UserDatabaseService.incrementNumberOfUsers();
         this.userID = UserDatabaseService.NumberOfUsers; 
@@ -56,6 +58,9 @@ public class User {
         
     }
 
+    public static List<User> searchUsersByKeyword(String keyword) throws InterruptedException, ExecutionException{
+        return UserDatabaseService.searchUsersByKeyword(keyword);
+    }
 
 
     /*                                          */
@@ -77,6 +82,16 @@ public class User {
         this.setUsername(username);
         
         UserDatabaseService.updateUserProfile(this);
+    }
+
+    public void setProfilePic(String FilePath) throws IOException{
+        String storagePath = "profile_photos/user" + this.getUserID();
+        this.profilePicURL = StorageService.uploadFile(FilePath, storagePath);
+    }
+
+    
+    public void setDefaultPic(){
+        this.profilePicURL = "https://storage.googleapis.com/travelbuddyapp-35c7b.firebasestorage.app/profile_photos/default.jpeg"; 
     }
 
     public void followUser(String targetUserID) {

@@ -1,13 +1,15 @@
 package mypackage.model;
 
 
-import java.io.File;
+
+import java.io.IOException;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import mypackage.service.JournalDatabaseService;
+import mypackage.service.StorageService;
 
 public class JournalEntry {
     
@@ -74,6 +76,10 @@ public class JournalEntry {
         return JournalDatabaseService.getEntriesByCityID(cityID);
     }
 
+    public static List<JournalEntry> getTopEntries() throws InterruptedException, ExecutionException{
+        return JournalDatabaseService.getTopFavoritedEntries();
+    }
+
     
 
     /*                                          */
@@ -85,15 +91,17 @@ public class JournalEntry {
     }
 
 
-    //TODO StorageService class
-    public boolean addPhoto(File file, String fileName) {
-        // Implementation here
-        return false;
+    
+    public void setPhoto(String filePath) throws IOException {
+        String storagePath = "entry_photos/entry" + this.getEntryID();
+        this.photoURL = StorageService.uploadFile(filePath, storagePath);
+        
     }
-    //TODO Storage Service class
-    public boolean removePhoto(String fileName) {
-        // Implementation here
-        return false;
+    
+    public void removePhoto(String fileName) {
+        String storagePath = "entry_photos/entry" + this.getEntryID();
+        StorageService.deleteFile(storagePath);
+        this.photoURL = "";
     }
 
     public void updateEntry(String title, String content, boolean isPublic) {
@@ -103,6 +111,8 @@ public class JournalEntry {
 
         JournalDatabaseService.updateJournalEntry(this);
     }
+
+
 
     
 
