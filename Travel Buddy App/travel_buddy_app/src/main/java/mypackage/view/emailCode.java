@@ -38,7 +38,7 @@ public class emailCode extends JFrame implements ActionListener{
         this.add(txtCode);
 
         //Okay button
-        JButton okay = new JButton("Okay");
+        RoundedButton okay = new RoundedButton("Okay",20);
         okay.setBackground(button);
         okay.setForeground(Color.WHITE);
         okay.setFont(new Font("Arial",Font.PLAIN,20));
@@ -50,21 +50,6 @@ public class emailCode extends JFrame implements ActionListener{
         });
         okay.setBounds(300,230,200,50);;
         this.add(okay);
-
-        //X button
-        JButton x = new JButton("X");
-        x.setBackground(lightBlue);
-        x.setForeground(darkBlue);
-        x.setFont(new Font("Arial",Font.BOLD,30));
-        x.setBorder(null);
-        x.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // TODO
-            }
-        });
-        x.setBounds(700,0,100,50);
-        this.add(x);
 
         setVisible(visible);
     }
