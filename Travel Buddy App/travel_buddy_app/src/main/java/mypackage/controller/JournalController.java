@@ -26,7 +26,8 @@ public final class JournalController
             mainWindow.revalidate();
             mainWindow.repaint();
 
-            try {
+            try 
+            {
                 JournalEntry.deleteEntry(tempEntry.getEntryID());
             } catch (Exception ex) {
                 System.out.println("Failed to delete entry: " + ex.getMessage());

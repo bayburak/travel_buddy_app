@@ -42,7 +42,8 @@ public class MapController {
         host.repaint();
     }
 
-    private void setupTopBar() {
+    private void setupTopBar() throws IOException
+    {
         mainView.getExploreBtn().addActionListener(e -> {
             // TODO: implement explore
         });
@@ -50,16 +51,9 @@ public class MapController {
             // TODO: implement find buddies
         });
 
-        // mainView.getProfileBtn().addActionListener(e -> {
-        //     try 
-        //     {
-        //         new ProfileController().open(host);
-        //     } 
-        //     catch (IOException e1)
-        //     {
-        //         e1.printStackTrace();
-        //     }
-        // });
+        mainView.getProfileBtn().addActionListener(e -> {
+            new ProfileController().open(host);
+        });
     }
 
     private void setupMapClicks()
