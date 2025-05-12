@@ -20,120 +20,153 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-/**
- * Hosts the map and overlays a popup when a city is clicked.
- */
 public class MapController {
     private final JFrame host;
-    private final MainMap view;
-    private final JXMapViewer map;
-    private final GeometryFactory gf = new GeometryFactory();
-    private cityPanel popup;
+    private final MainMap mainView; 
+    private final JXMapViewer mapInstance; 
+    private final GeometryFactory geometryFactory = new GeometryFactory();
+    private cityPanel popupPanel;
 
     public MapController(JFrame host) throws IOException {
         this.host = host;
-        this.view = new MainMap();
-        this.map  = (JXMapViewer) MapService.getMapPanel();
-        view.add(map);
+        this.mainView = new MainMap();
+        this.mapInstance = (JXMapViewer) MapService.getMapPanel();
+        mainView.add(mapInstance);
 
-        wireTopBar();
-        wireClicks();
-        syncLayout();
+        setupTopBar();     
+        setupMapClicks();  
+        handleWindowResize();
 
-        host.setContentPane(view);
+        host.setContentPane(mainView);
         host.revalidate();
         host.repaint();
     }
 
-    /** Set up Explore and Find buttons on the top bar */
-    private void wireTopBar() {
-        view.getExploreBtn().addActionListener(e -> {
+    private void setupTopBar() {
+        mainView.getExploreBtn().addActionListener(e -> {
             // TODO: implement explore
         });
-        view.getFindBuddyBtn().addActionListener(e -> {
+        mainView.getFindBuddyBtn().addActionListener(e -> {
             // TODO: implement find buddies
         });
+
+        // mainView.getProfileBtn().addActionListener(e -> {
+        //     try 
+        //     {
+        //         new ProfileController().open(host);
+        //     } 
+        //     catch (IOException e1)
+        //     {
+        //         e1.printStackTrace();
+        //     }
+        // });
     }
 
-    /** Listen for clicks on the map itself */
-    private void wireClicks() {
-        map.addMouseListener(new MouseAdapter() {
-            @Override public void mouseClicked(MouseEvent e) {
-                GeoPosition gp = map.convertPointToGeoPosition(e.getPoint());
-                var pt = gf.createPoint(new Coordinate(gp.getLongitude(), gp.getLatitude()));
-                for (City c : City.allCities) {
-                    if (c.getPolygon().contains(pt)) {
-                        showPopupAsync(c, e.getPoint());
-                        return;
+    private void setupMapClicks()
+    {
+        mapInstance.addMouseListener(new MouseAdapter()
+        {
+            @Override public void mouseClicked(MouseEvent e)
+            {
+                GeoPosition gp = mapInstance.convertPointToGeoPosition(e.getPoint());
+                var point = geometryFactory.createPoint(new Coordinate(gp.getLongitude(), gp.getLatitude()));
+                if (point != null) 
+                {
+                    for (City c : City.allCities)
+                    {
+                        if (c.getPolygon().contains(point)) 
+                        {
+                            triggerPopupAsync(c, e.getPoint());
+                            return;
+                        }
                     }
                 }
-                hidePopup();
+
+                closePopup();
             }
         });
     }
 
-    private void showPopupAsync(City city, Point mapPt) {
-        hidePopup();
-        new SwingWorker<Integer,Void>() {
-            @Override protected Integer doInBackground() throws Exception {
-                List<JournalEntry> entries = JournalDatabaseService.getEntriesByUser(Session.getCurrentUserID());
+
+    private void triggerPopupAsync(City city, Point mapPt)
+    {
+        closePopup();
+        new SwingWorker<Integer, Void>() {
+            @Override protected Integer doInBackground() 
+            {
+                List<JournalEntry> entries;
+                try 
+                {
+                    entries = JournalDatabaseService.getEntriesByUser(Session.getCurrentUserID());
+                } 
+                catch (Exception ex)
+                {
+                    System.out.println("Database fetch failed: " + ex.getMessage());
+                    entries = List.of(); 
+                }
                 return (int) entries.stream()
                     .filter(en -> en.getCityID().equals(city.getCityID()))
                     .count();
             }
-            @Override protected void done() {
+            @Override protected void done()
+            {
                 int count = 0;
-                try { count = get(); } catch (InterruptedException|ExecutionException ignored) {}
+                try 
+                { 
+                    count = get(); 
+                } catch (InterruptedException | ExecutionException e) 
+                {
+                    e.printStackTrace();
+                }
                 city.setEntryCount(count);
-                try {
-                    showPopup(city, mapPt);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
+                try 
+                {
+                    renderPopup(city, mapPt);
+                } 
+                catch (InterruptedException | ExecutionException e) 
+                {
+                    System.out.println("Failed to render popup: " + e.getMessage());
                 }
             }
         }.execute();
     }
 
-    private void showPopup(City city, Point mapPt) throws InterruptedException, ExecutionException {
-        popup = new cityPanel(city);
-        popup.addEntryListener(evt -> JournalController.open(host, city));
-        Point pnl = SwingUtilities.convertPoint(map, mapPt, view);
-        popup.setBounds(pnl.x, pnl.y, 300, 100);
-        view.add(popup);
-        view.setComponentZOrder(popup, 0);
-        view.repaint();
+    private void renderPopup(City city, Point mapPt) throws InterruptedException, ExecutionException {
+        popupPanel = new cityPanel(city);
+        popupPanel.addEntryListener(evt -> JournalController.createForm(host, city));
+        Point pnl = SwingUtilities.convertPoint(mapInstance, mapPt, mainView);
+        popupPanel.setBounds(pnl.x, pnl.y, 300, 100);
+        mainView.add(popupPanel);
+        mainView.setComponentZOrder(popupPanel, 0);
+        mainView.repaint();
     }
 
-    private void hidePopup() {
-        if (popup != null) {
-            view.remove(popup);
-            view.repaint();
-            popup = null;
+    private void closePopup() {
+        if (popupPanel != null) {
+            mainView.remove(popupPanel);
+            mainView.repaint();
+            popupPanel = null;
         }
     }
 
-    /** Keep map and bar sized to the window */
-    private void syncLayout() {
-        host.addComponentListener(new ComponentAdapter() {
-            @Override public void componentResized(ComponentEvent e) {
-                doLayout();
+
+    private void handleWindowResize() {
+        host.addComponentListener(new ComponentAdapter() 
+        {
+            @Override public void componentResized(ComponentEvent e)
+            {
+                doLayoutSetup();
             }
         });
-        doLayout();
+        doLayoutSetup();
     }
 
-    private void doLayout()
+    private void doLayoutSetup()
     {
-        int w = view.getWidth();
-        int h = view.getHeight();
-        int barH = view.getTopBar().getPreferredSize().height;
-        view.getTopBar().setBounds(0, 0, w, barH);
-        map.setBounds(0, barH, w, h - barH);
-        if (popup != null)
-        {
-
-        }
+        int width = mainView.getWidth();
+        int height = mainView.getHeight();
+        int barHeight = mainView.getTopBar().getPreferredSize().height;
+        mainView.getTopBar().setBounds(0, 0, width, barHeight);
+        mapInstance.setBounds(0, barHeight, width, height - barHeight);
     }
 }

@@ -9,80 +9,93 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 
-/**
- * Shows the journal-entry form, handles validation/persistence,
- * and restores the previous view.
- */
-public final class JournalController {
+
+public final class JournalController
+{
     private JournalController() {}
 
-    public static void open(JFrame host, City presetCity)
+    public static void createForm(JFrame mainWindow, City preselectedCity)
     {
-        Container previous = host.getContentPane();
+        Container previousView = mainWindow.getContentPane();
 
-        JournalEntry currentEntry = new JournalEntry("", "", true, presetCity.getCityID(), Session.getCurrentUserID());
-        currentEntry.addEntrytoDatabase();
+        JournalEntry tempEntry = new JournalEntry("", "", true, preselectedCity.getCityID(), Session.getCurrentUserID());
+        tempEntry.addEntrytoDatabase(); 
 
-        // 1) create form with only back callback
-        journalEntry form = new journalEntry(presetCity, () -> {
-            host.setContentPane(previous);
-            host.revalidate(); host.repaint();
-            JournalEntry.deleteEntry(currentEntry.getEntryID());
+        journalEntry entryForm = new journalEntry(preselectedCity, () -> {
+            mainWindow.setContentPane(previousView);
+            mainWindow.revalidate();
+            mainWindow.repaint();
+
+            try {
+                JournalEntry.deleteEntry(tempEntry.getEntryID());
+            } catch (Exception ex) {
+                System.out.println("Failed to delete entry: " + ex.getMessage());
+            }
         }, null, null);
 
-        // 2) wire attach-photo 
-        form.attachBtn.addActionListener(e ->
-            new PhotoUploader(url -> form.setPhotoURL(url))
-        );
+        // 2) Wire attach-photo 
+        entryForm.attachBtn.addActionListener(e -> {
+            new PhotoUploader(url -> {
+                if (url != null) {
+                    entryForm.setPhotoURL(url);
+                } else {
+                    System.out.println("Photo upload returned a null URL.");
+                }
+            });
+        });
 
-        // 3) wire submit
-        form.submitBtn.addActionListener(e -> {
-            if (validateAndSave(host, form,currentEntry)) {
-                host.setContentPane(previous);
-                host.revalidate();
-                host.repaint();
+        // 3) Wire submit
+        entryForm.submitBtn.addActionListener(e -> {
+            if (validate(mainWindow, entryForm, tempEntry)) {
+                mainWindow.setContentPane(previousView);
+                mainWindow.revalidate();
+                mainWindow.repaint();
+            } else {
+                System.out.println("Validation failed; entry not saved.");
             }
         });
 
-        // 4) show form
-        host.setContentPane(form);
-        host.revalidate(); host.repaint();
+        // 4) Display form
+        mainWindow.setContentPane(entryForm);
+        mainWindow.revalidate();
+        mainWindow.repaint();
     }
 
-    private static boolean validateAndSave(JFrame parent, journalEntry ui, JournalEntry currenEntry)
-    {
-        String title = ui.getTitle();
-        String cityName = ui.getCityName();
-        String body = ui.getBody();
-        boolean isPriv = ui.isPrivate();
-        String photoURL = ui.getPhotoURL();
+    private static boolean validate(JFrame parent, journalEntry form, JournalEntry tempEntry) {
+        String title = form.getTitle();
+        String cityName = form.getCityName();
+        String body = form.getBody();
+        boolean isPrivate = form.isPrivate();
+        String photoURL = form.getPhotoURL();
 
         if (title.isEmpty())
-        { 
-            showMessage(parent, "Please enter a title.");
+        {
+            popMessage(parent, "Title is missing. Please enter a title.");
             return false; 
         }
-        if (body.isEmpty())
-        { 
-            showMessage(parent, "Please write your entry.");   
+        if (body.isEmpty()) 
+        {
+            popMessage(parent, "You forgot to write your entry!");
             return false;
         }
-        currenEntry.updateEntry(title, body, isPriv);
+
+        tempEntry.updateEntry(title, body, isPrivate);
+
         try 
         {
-            currenEntry.setPhoto(photoURL);
+            tempEntry.setPhoto(photoURL);
         } 
-        catch (IOException e)
+        catch (IOException e) 
         {
-            e.printStackTrace();
+            System.out.println("Photo could not be set: " + e.getMessage());
         }
-        showMessage(parent, "Entry saved!");
+
+        popMessage(parent, "Your entry has been saved!");
         return true;
     }
 
-    private static void showMessage(Component parent, String msg) 
-    {
+    private static void popMessage(Component parent, String msg) {
         JOptionPane.showMessageDialog(parent, msg,
-            "Journal Entry", JOptionPane.INFORMATION_MESSAGE);
+            "Journal Entry Notification", JOptionPane.INFORMATION_MESSAGE);
     }
 }

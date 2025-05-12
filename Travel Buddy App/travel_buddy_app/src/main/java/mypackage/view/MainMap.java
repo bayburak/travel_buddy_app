@@ -12,11 +12,12 @@
         public final JPanel topBar;
         public final JButton exploreBtn;
         public final JButton findBuddyBtn;
+        public final JButton ProfileBtn;
 
-        private static final Color BAR_COLOR    = new Color(34,  86, 153);
+        private static final Color BAR_COLOR = new Color(34,  86, 153);
         private static final Color BUTTON_COLOR = new Color(19,  49,  88);
-        private static final Font  BUTTON_FONT  = new Font("Arial", Font.BOLD, 12);
-        private static final int   BAR_HEIGHT   = 70;
+        private static final Font BUTTON_FONT  = new Font("Arial", Font.BOLD, 12);
+        private static final int BAR_HEIGHT = 70;
 
         public MainMap()
         {
@@ -28,10 +29,14 @@
 
             exploreBtn   = new RoundedButton("Explore", 20);
             findBuddyBtn = new RoundedButton("Find Travel Buddies", 20);
+            ProfileBtn = new RoundedButton("Profile", 20);
+
             styleButton(exploreBtn);
             styleButton(findBuddyBtn);
+            styleButton(ProfileBtn);
             topBar.add(exploreBtn);
             topBar.add(findBuddyBtn);
+            topBar.add(ProfileBtn);
 
             add(topBar);
         }
@@ -55,6 +60,11 @@
         public JButton getFindBuddyBtn()
         {
             return findBuddyBtn;
+        }
+
+        public JButton getProfileBtn()
+        {
+            return getProfileBtn();
         }
 
     }
