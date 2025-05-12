@@ -1,216 +1,112 @@
+// ────────────────────────────────────────────────────────────────
+//  MapService.java  (package: mypackage.service)
+// ────────────────────────────────────────────────────────────────
 package mypackage.service;
 
-
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.event.MouseAdapter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-
-import java.awt.event.MouseEvent;
-import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
-import java.awt.BasicStroke;
-import java.awt.Color;
-
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import mypackage.model.City;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.painter.Painter;
 import org.jxmapviewer.viewer.*;
 import org.locationtech.jts.geom.*;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.awt.*;
+import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
-
-import mypackage.model.City;
-
+/**
+ * Loads <code>trCities.json</code> from the runtime class‑path and returns a
+ * <i>tile‑less</i> {@link JXMapViewer} that paints Turkey’s 81 provinces.
+ */
 public class MapService {
 
-    
-    public static List<City> readCities () throws IOException {
+    /* ═════════════════════════ geojson → memory ═════════════════════════ */
+    public static List<City> readCities() throws IOException {
+        List<City> list = new ArrayList<>();
+        InputStream in = MapService.class.getResourceAsStream("/trCities.json");
+        if (in == null) throw new IOException("trCities.json missing");
 
-        GeometryFactory geofactory = new GeometryFactory();
-        List<City> cities = new ArrayList<>();
-        
-            ObjectMapper mapper = new ObjectMapper();
-            InputStream inputstrm = MapService.class.getResourceAsStream("/trCities.json");
-            JsonNode root = mapper.readTree(inputstrm);
+        ObjectMapper m = new ObjectMapper();
+        GeometryFactory gf = new GeometryFactory();
+        JsonNode features = m.readTree(in).get("features");
 
-            JsonNode features = root.get("features");
+        for (JsonNode f : features) {
+            String name = f.get("properties").get("name").asText();
+            String id   = f.get("properties").get("number").asText();
+            JsonNode geom = f.get("geometry");
+            String type = geom.get("type").asText();
 
-            for (JsonNode feature : features) {
-                String name = feature.get("properties").get("name").asText();
-                JsonNode geometry = feature.get("geometry");
-                String number = feature.get("properties").get("number").asText();
-                String type = geometry.get("type").asText();
-
-                if (type.equals("Polygon")) {
-                    JsonNode cordinates = geometry.get("coordinates").get(0);
-                    City city = createCity(cordinates, name, number,geofactory);
-                    cities.add(city);
-                } else if (type.equals("MultiPolygon")) {
-                    JsonNode multiCoordinates = geometry.get("coordinates");
-                    for (JsonNode polygonCoords : multiCoordinates) {
-                        JsonNode coordinates = polygonCoords.get(0); // Take outer shell
-                        City province = createCity(coordinates, name, number,geofactory);
-                        cities.add(province);
-                    }
-                }
+            if ("Polygon".equals(type)) {
+                list.add(makeCity(geom.get("coordinates").get(0), name, id, gf));
+            } else { // MultiPolygon
+                for (JsonNode poly : geom.get("coordinates"))
+                    list.add(makeCity(poly.get(0), name, id, gf));
             }
-        
-        return cities;
-    }
-
-    private static City createCity(JsonNode coordinatesArray, String name, String ID,  GeometryFactory geometryFactory) {
-        List<Coordinate> coordinatesArrayList = new ArrayList<>();
-        for (JsonNode point : coordinatesArray) {
-            double lon = point.get(0).asDouble();
-            double lat = point.get(1).asDouble();
-            coordinatesArrayList.add(new Coordinate(lon, lat));
         }
-
-        Coordinate[] coordinates = coordinatesArrayList.toArray(new Coordinate[0]);
-
-        LinearRing ring = geometryFactory.createLinearRing(coordinates);
-        Polygon polygon = geometryFactory.createPolygon(ring, null);
-
-        return new City(name, polygon, ID);
+        return list;
     }
-    
-    public static class CityPainter implements Painter<JXMapViewer> {
-       
-    
-    
-        @Override
-        public void paint(Graphics2D g, JXMapViewer map, int widht, int height) {
+
+    private static City makeCity(JsonNode arr, String name, String id, GeometryFactory gf){
+        List<Coordinate> coords = new ArrayList<>();
+        for (JsonNode p : arr) coords.add(new Coordinate(p.get(0).asDouble(), p.get(1).asDouble()));
+        return new City(name, gf.createPolygon(gf.createLinearRing(coords.toArray(Coordinate[]::new))), id);
+    }
+
+    /* ═══════════════════════ painter + viewer ═══════════════════════════ */
+    private static class OutlinePainter implements Painter<JXMapViewer> {
+        @Override public void paint(Graphics2D g, JXMapViewer map, int w, int h) {
             Graphics2D g2 = (Graphics2D) g;
-
-            TileFactory tilef = map.getTileFactory();
-            Rectangle pixels = map.getViewportBounds();
-
+            Rectangle vp = map.getViewportBounds();
             int zoom = map.getZoom();
-            
-            g.setColor(Color.WHITE);
-            g.fillRect(0, 0, widht, height);
+            TileFactory tf = map.getTileFactory();
 
-            for (City city : City.allCities) {
-                Polygon geoPolygon = city.getPolygon();
-                Coordinate[] cords = geoPolygon.getExteriorRing().getCoordinates();
-    
-                java.awt.Polygon pixPoly = new java.awt.Polygon();
+            g2.setColor(Color.WHITE);
+            g2.fillRect(0,0,w,h);
 
-                for (Coordinate cord : cords) {
-                    
-                    GeoPosition geop = new GeoPosition(cord.y, cord.x);
-                    Point2D pixelp = tilef.geoToPixel(geop, zoom);
-
-                    int x = (int) (pixelp.getX() - pixels.getX());
-                    int y = (int) (pixelp.getY() - pixels.getY());
-
-
-                    pixPoly.addPoint(x, y);
+            for(City c : City.allCities){
+                Coordinate[] pts = c.getPolygon().getExteriorRing().getCoordinates();
+                java.awt.Polygon poly = new java.awt.Polygon();
+                for(Coordinate pt: pts){
+                    Point2D px = tf.geoToPixel(new GeoPosition(pt.y, pt.x), zoom);
+                    poly.addPoint((int)(px.getX()-vp.x),(int)(px.getY()-vp.y));
                 }
-    
-                g2.setColor(new Color(20, 90, 130)); 
-                g2.fillPolygon(pixPoly);
-                g2.setColor(Color.WHITE); 
+                g2.setColor(new Color(20,90,130));
+                g2.fillPolygon(poly);
+                g2.setColor(Color.WHITE);
                 g2.setStroke(new BasicStroke(1.5f));
-                g2.drawPolygon(pixPoly);
+                g2.drawPolygon(poly);
             }
-    
-           
         }
     }
-    
 
+    /**
+     * Returns a fully initialised <b>static</b> JXMapViewer (no online tiles).
+     */
+    public static JXMapViewer getMapPanel() throws IOException {
+        if (City.allCities == null) City.initializeCitys();
 
-    public static JPanel getMapPanel() throws IOException{
-        if(City.allCities == null){
-            City.initializeCitys();
-        }
-        
+        JXMapViewer map = new JXMapViewer();
 
-        JXMapViewer mapViewer = new JXMapViewer();
+        TileFactoryInfo blank = new TileFactoryInfo(0,17,17,256,true,true,"","x","y","z"){
+            @Override public String getTileUrl(int x,int y,int z){ return null; }
+        };
+        map.setTileFactory(new DefaultTileFactory(blank){
+            @Override public Tile getTile(int x,int y,int z){
+                return new Tile(x,y,z){
+                    @Override public boolean isLoaded(){ return true; }
+                    @Override public BufferedImage getImage(){ return null; } };
+            }});
 
-        SwingUtilities.invokeLater(() -> {
-
-            TileFactoryInfo blankInfo = new TileFactoryInfo(0, 17, 17, 256, true, true, "", "x", "y", "z") {
-                @Override
-                public String getTileUrl(int x, int y, int zoom) {
-                    return null; 
-                    
-                }
-            };
-            
-            
-
-            DefaultTileFactory tileFactory = new DefaultTileFactory(blankInfo) {
-                @Override
-                public Tile getTile(int x, int y, int zoom) {
-                    return new Tile(x, y, zoom) {
-                        @Override
-                        public boolean isLoaded() {
-                            return true;  
-                        }
-            
-                        @Override
-                        public BufferedImage getImage() {
-                            return null;  
-                        }
-                    };
-                }
-            };
-        
-    
-            
-            mapViewer.setTileFactory(tileFactory);
-            
-            
-
-
-            
-            GeoPosition turkeyCenter = new GeoPosition(39.29141455990794, 35.160410871742386);
-            mapViewer.setZoom(11);
-            mapViewer.setAddressLocation(turkeyCenter);
-            mapViewer.setBackground(Color.WHITE);
-            mapViewer.setPanEnabled(false);
-
-
-            CityPainter painter = new CityPainter();
-            mapViewer.setOverlayPainter(painter);
-
-           
-            GeometryFactory geometryFactory = new GeometryFactory();
-            
-            mapViewer.addMouseListener(new MouseAdapter() {
-                 @Override
-                 public void mouseClicked(MouseEvent e) {
-                     java.awt.Point clickPoint = e.getPoint();
-                     GeoPosition clickedGeo = mapViewer.convertPointToGeoPosition(clickPoint);
-                     Coordinate clickedCoord = new Coordinate(clickedGeo.getLongitude(), clickedGeo.getLatitude());
-                     Point jPoint = geometryFactory.createPoint(clickedCoord);
-
-                     for (City city : City.allCities) {
-                         if (city.getPolygon().contains(jPoint)) {
-                             System.out.println("Clicked on " + city.getName().toUpperCase()+ " ID: " + city.getCityID());
-                             return;
-                         }
-                     }
-                     System.out.println("Clicked outside Turkey");
-                 }
-            });
-
-
-        });
-
-        return mapViewer;
+        map.setOverlayPainter(new OutlinePainter());
+        map.setBackground(Color.WHITE);
+        map.setPanEnabled(false);
+        map.setZoom(11);
+        map.setAddressLocation(new GeoPosition(39.29,35.16));
+        return map;
     }
-    
-
 }

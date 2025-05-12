@@ -21,7 +21,7 @@ public final class JournalController {
         Container previous = host.getContentPane();
 
         JournalEntry currentEntry = new JournalEntry("", "", true, presetCity.getCityID(), Session.getCurrentUserID());
-
+        currentEntry.addEntrytoDatabase();
 
         // 1) create form with only back callback
         journalEntry form = new journalEntry(presetCity, () -> {

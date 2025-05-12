@@ -25,7 +25,7 @@ public class Main {
         {
             System.out.println("Failed to set look and feel: " + e.getMessage());
         }
-
+        
         login loginView = new login();
         signup signupView = new signup();
         signupView.setVisible(false);
