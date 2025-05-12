@@ -46,17 +46,31 @@ public class UserDatabaseService extends DatabaseService {
     public static void deleteUser(String userID) {
 
         
-
-        database.child("users").child(userID).child("entries").addListenerForSingleValueEvent(new ValueEventListener() {
+        
+        
+        DatabaseReference entriesReference = database.child("users").child(userID).child("entries");
+        
+        
+        entriesReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            
             @Override
             public void onDataChange(DataSnapshot snapshot){
-                deleteEntries(snapshot,new Runnable() {
+
+                if(!snapshot.exists()){
+                    removeUserFromFollowLists(userID);
+                    database.child("users").child(userID).removeValue(null);
+                }
+                else{
+                    deleteEntries(snapshot,new Runnable() {
                     @Override
                     public void run(){
                         removeUserFromFollowLists(userID);
                         database.child("users").child(userID).removeValue(null);
                     }
                 });
+                }
+                
+                
             }
             @Override 
             public void onCancelled(DatabaseError error){
