@@ -1,98 +1,91 @@
+// src/main/java/mypackage/view/cityPanel.java
 package mypackage.view;
-import mypackage.model.*;
+
+import mypackage.model.City;
+import mypackage.model.JournalEntry;
 
 import javax.swing.*;
-
-
-
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.concurrent.ExecutionException;
 
-/*
- * TODO1: addEntryButton
- * TODO2: showEntryButton
+/**
+ * Pop‑up showing a city’s name, entry count, and Add/Show buttons.
  */
-
 public class cityPanel extends JPanel {
-    private Color color = new Color(63, 114, 149);
-    private City city;
+    private static final Color BLUE = new Color(63,114,149);
+    private final JLabel cntLabel;
+    private final JButton addEntryBtn;
+    private final JButton showEntriesBtn;
 
-    public cityPanel(City Acity) {
-        this.city=Acity;
-        // Set layout to null for absolute positioning
+    public cityPanel(City city) throws InterruptedException, ExecutionException {
         setLayout(null);
-        
-        // Set fixed size
         setPreferredSize(new Dimension(300, 100));
-        setMinimumSize(new Dimension(300, 100));
-        setMaximumSize(new Dimension(300, 100));
-        
         setBackground(Color.WHITE);
-        
-        // Create and position the X button
-        JButton x = new JButton("X");
-        x.setBackground(Color.WHITE);
-        x.setForeground(color);
-        x.setFont(new Font("Arial", Font.BOLD, 12)); 
-        x.setBorder(null);
-        x.addActionListener(e-> {
-            Container parent = this.getParent();
-            if(parent!=null){
-                parent.remove(this);
-                parent.revalidate();
-                parent.repaint();
-            }
-            
-        });
-        x.setBounds(275, 5, 20, 20); 
-        add(x);
-        
-        // Create city name label
-        JLabel cityName = new JLabel(city.getName());
-        cityName.setForeground(color);
-        cityName.setFont(new Font("Arial", Font.PLAIN, 20));
-        cityName.setBounds(10, 10, 180, 30); 
-        add(cityName);
 
-        JLabel journalEntries = new JLabel("Journal Entries: "+city.getEntryCount());
-        journalEntries.setForeground(color);
-        journalEntries.setFont(new Font("Arial", Font.PLAIN, 20));
-        journalEntries.setBounds(10, 30, 180, 30); 
-        add(journalEntries);
-        
-        // Create buttons panel
-        JPanel buttons = new JPanel();
-        buttons.setOpaque(false);
-        buttons.setBounds(10, 60, 280, 30);
-        
-        // Create buttons
-        JButton addEntries = new RoundedButton("Add Entry", 20);
-        addEntries.setBackground(color);
-        addEntries.setForeground(Color.WHITE);
-        addEntries.setPreferredSize(new Dimension(130, 25));
-        addEntries.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e){
-
+        // Close button
+        JButton close = new JButton("X");
+        close.setBounds(275, 5, 20, 20);
+        close.setFont(new Font("Arial", Font.BOLD, 12));
+        close.setForeground(BLUE);
+        close.setBorder(null);
+        close.setBackground(Color.WHITE);
+        close.addActionListener(e -> {
+            Container p = getParent();
+            if (p != null) {
+                p.remove(this);
+                p.revalidate();
+                p.repaint();
             }
         });
-        
-        JButton showEntries = new RoundedButton("Show Entries", 20);
-        showEntries.setBackground(color);
-        showEntries.setForeground(Color.WHITE);
-        showEntries.setPreferredSize(new Dimension(130, 25));
-        showEntries.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e){
+        add(close);
 
-            }
-        });
-        
-        buttons.add(addEntries);
-        buttons.add(Box.createHorizontalStrut(5));
-        buttons.add(showEntries);
-        
-        add(buttons);
+        // City name label
+        JLabel nameLbl = new JLabel(city.getName());
+        nameLbl.setBounds(10, 10, 200, 25);
+        nameLbl.setFont(new Font("Arial", Font.BOLD, 20));
+        nameLbl.setForeground(BLUE);
+        add(nameLbl);
+
+        // Count label
+        cntLabel = new JLabel("Journal Entries: " +JournalEntry.getEntriesByCityID(city.getCityID()).size());
+        cntLabel.setBounds(10, 35, 200, 20);
+        cntLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        cntLabel.setForeground(BLUE);
+        add(cntLabel);
+
+        // Button row
+        addEntryBtn = makeButton("Add Entry");
+        showEntriesBtn = makeButton("Show Entries");
+        addEntryBtn.setBounds(10, 60, 130, 25);
+        showEntriesBtn.setBounds(150, 60, 130, 25);
+        add(addEntryBtn);
+        add(showEntriesBtn);
+    }
+
+    private JButton makeButton(String text) {
+        JButton b = new RoundedButton(text, 20);
+        b.setBackground(BLUE);
+        b.setForeground(Color.WHITE);
+        b.setFocusPainted(false);
+        return b;
+    }
+
+    /** Hook for "Add Entry" */
+    public void addEntryListener(ActionListener l)
+    {
+        addEntryBtn.addActionListener(l);
+    }
+
+    /** Hook for "Show Entries" */
+    public void addShowEntriesListener(ActionListener l)
+    {
+        showEntriesBtn.addActionListener(l);
+    }
+
+    /** Update the displayed count */
+    public void setEntryCount(int cnt) 
+    {
+        cntLabel.setText("Journal Entries: " + cnt);
     }
 }

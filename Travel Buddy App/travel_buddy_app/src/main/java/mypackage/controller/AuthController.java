@@ -35,9 +35,12 @@ public class AuthController {
         String username = loginView.txtUsername.getText().trim();
         String password = new String(loginView.txtPassword.getPassword());
 
-        if (username.isEmpty() || password.isEmpty())
+        if(username.isEmpty() || password.isEmpty())
         {
-            JOptionPane.showMessageDialog(loginView, "Username and password are required.", "Missing Data", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(loginView,
+                                        "Username and password are required.",
+                                        "Missing Data",
+                                        JOptionPane.WARNING_MESSAGE);
             bringLoginToFront();
             return;
         }
@@ -47,23 +50,40 @@ public class AuthController {
         CompletableFuture
             .supplyAsync(() -> {
                 try { return UserDatabaseService.getUserByUsername(username); }
-                catch (Exception ex) { throw new CompletionException(ex); }
+                catch(Exception ex){ throw new CompletionException(ex); }
             })
             .thenAccept(user -> SwingUtilities.invokeLater(() -> {
                 loginView.signIn.setEnabled(true);
 
-                if (user == null || !password.equals(user.getPassword()))
+                if(user == null || !password.equals(user.getPassword()))
                 {
-                    JOptionPane.showMessageDialog(loginView,"Invalid username or password.","Login Failed",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(loginView,
+                                                "Invalid username or password.",
+                                                "Login Failed",
+                                                JOptionPane.ERROR_MESSAGE);
                     bringLoginToFront();
                     return;
                 }
 
                 loginView.dispose();
-                new MainViewHande();
+                Session.setCurrentUser(user);
+
+                JFrame mapFrame = new JFrame("Map menu");
+                mapFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                mapFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                try
+                {
+                    new MapController(mapFrame);
+                    mapFrame.setVisible(true);
+                }
+                catch(IOException io)
+                {
+                    JOptionPane.showMessageDialog(null, "Could not load map: " + io.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }))
             .exceptionally(ex -> {
-                SwingUtilities.invokeLater(() -> {
+                SwingUtilities.invokeLater(() -> 
+                {
                     loginView.signIn.setEnabled(true);
                     JOptionPane.showMessageDialog(loginView, "Authentication error: " + ex.getCause().getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     bringLoginToFront();
@@ -71,6 +91,7 @@ public class AuthController {
                 return null;
             });
     }
+
 
     private void wireSignupView()
     {
