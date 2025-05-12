@@ -69,7 +69,7 @@ public class findTravelbuddy extends JPanel implements ActionListener{
         searchBarPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         searchBarPanel.add(new JLabel("Find Users:  "), BorderLayout.WEST);
         searchBarPanel.add(searchField, BorderLayout.CENTER);
-        searchBarPanel.setBounds(400,0,400,70);
+        searchBarPanel.setBounds(400,7,500,50);
         topBlue.add(searchBarPanel);
 
         //Enter key listener

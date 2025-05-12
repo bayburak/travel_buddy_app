@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 
 public class genericUserPanel extends JPanel{
@@ -33,17 +34,31 @@ public class genericUserPanel extends JPanel{
         this.setLayout(null);
 
         //TODO Profile Picture Button
-
+        
         try {
-            URL imageUrl = new URL(user.getPhotoURL());
-            image = ImageIO.read(imageUrl);
-        } catch (Exception e) {
+            URI uri = URI.create("https://firebasestorage.googleapis.com/v0/b/travelbuddyapp-35c7b.firebasestorage.app/o/profile_photos%2Fdefault.jpeg?alt=media&token=6a937830-968e-4f9a-9d1e-0ed330fbbe91");
+            URL url = uri.toURL();  // Preferred over new URL(String)
+            
+            try (InputStream in = url.openStream()) {
+                
+                image = ImageIO.read(in);
+
+                if (image != null) {
+                    System.out.println("Image successfully read!");
+                } else {
+                    System.out.println("Failed to decode the image.");
+                }
+            }
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
-        BufferedImage roundedImage = (RoundImage.makePerfectCircle(image, 200,Color.GRAY,1));
+        
+        BufferedImage roundedImage = (RoundImage.makePerfectCircle(image, 80,Color.WHITE,2));
         JLabel imageLabel = new JLabel(new ImageIcon(roundedImage));
-        imageLabel.setBounds(10,10,20,20);
+        imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        imageLabel.setVerticalAlignment(SwingConstants.CENTER);
+        imageLabel.setBounds(150,30,100,100);
         this.add(imageLabel);
         
 
@@ -64,5 +79,22 @@ public class genericUserPanel extends JPanel{
         namePanel.add(name);
         namePanel.add(username);
         this.add(namePanel);
+
+        //Visit Profile Button
+        RoundedButton visit = new RoundedButton("Visit Profile",20);
+        visit.setForeground(Color.WHITE);
+        visit.setBackground(new Color(55,127,188));
+        visit.setBorder(null);
+        visit.setFont(new Font("Arial",Font.BOLD,12));
+        visit.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO
+            }
+            
+        });
+        visit.setBounds(100,320,200,50);
+        this.add(visit);
     }
 }
