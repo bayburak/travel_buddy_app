@@ -1,56 +1,48 @@
-// src/main/java/mypackage/model/City.java
 package mypackage.model;
+
 
 import java.io.IOException;
 import java.util.List;
+
 import org.locationtech.jts.geom.Polygon;
+
 import mypackage.service.MapService;
 
 public class City {
+    
     public static List<City> allCities;
 
-    private final String  cityID;
-    private final String  name;
-    private int           entryCount;
-    private final Polygon polygon;
+    private String cityID;
+    private String name;
+    private int entryCount;
+    private Polygon polygon;
 
-    public City(String name, Polygon polygon, String ID)
-    {
+    public City(String name, Polygon polgon, String ID){
         this.name = name;
-        this.polygon = polygon;
+        this.polygon = polgon;
         this.cityID = ID;
         this.entryCount = 0;
     }
 
-    public static void initializeCitys() throws IOException
-    {
+    public static void initializeCitys() throws IOException{
         allCities = MapService.readCities();
     }
 
-    public void incrementEntryCount()
-    {
-        entryCount++;
-    }
 
-    public void setEntryCount(int cnt)
-    {
-        this.entryCount = cnt;
+    public static City getCitybyID(String ID){
+        for(City aCity: allCities){
+            if(aCity.cityID.equals(ID) ){
+                return aCity;
+            }
+        }
+        return null;
     }
+    public void incrementEntryCount(){ entryCount++; }
 
-    public String getName()
-    { 
-        return name;
-    }
-    public Polygon getPolygon()
-    { 
-        return polygon; 
-    }
-    public String getCityID()
-    { 
-        return cityID;
-    }
-    public int getEntryCount()
-    { 
-        return entryCount;
-    }
+    public String getName(){ return name;}
+    public Polygon getPolygon(){ return polygon;}
+    public String getCityID(){ return cityID;}
+    public int getEntryCount(){ return entryCount;}
+
+
 }
