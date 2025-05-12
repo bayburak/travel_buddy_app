@@ -124,7 +124,7 @@ public class AuthController {
             }
 
             User user = new User(nameSurname, password, email, username);
-            user.addUsertoDatabase;
+            user.addUsertoDatabase();
             JOptionPane.showMessageDialog(signupView, "Account successfully created!", "Success", JOptionPane.INFORMATION_MESSAGE);
             switchToLogin();
             signupView.txtPassword.setText("");

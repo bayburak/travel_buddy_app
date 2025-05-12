@@ -7,6 +7,7 @@ import mypackage.service.MapService;
 import mypackage.view.MainMap;
 import mypackage.view.allJournals;
 import mypackage.view.cityPanel;
+import mypackage.view.explore;
 
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.viewer.GeoPosition;
@@ -45,10 +46,18 @@ public class MapController {
     private void setupTopBar() throws IOException
     {
         mainView.getExploreBtn().addActionListener(e -> {
-            // TODO: implement explore
+            new ExploreController().open(host);
         });
         mainView.getFindBuddyBtn().addActionListener(e -> {
-            // TODO: implement find buddies
+            try {
+                new FindBuddyController().open(host);
+            } catch (ExecutionException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            } catch (InterruptedException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
         });
 
         mainView.getProfileBtn().addActionListener(e -> {
@@ -112,7 +121,6 @@ public class MapController {
                 {
                     e.printStackTrace();
                 }
-                city.setEntryCount(count);
                 try 
                 {
                     renderPopup(city, mapPt);
