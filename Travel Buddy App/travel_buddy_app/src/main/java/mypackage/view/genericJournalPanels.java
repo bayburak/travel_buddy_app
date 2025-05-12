@@ -1,9 +1,15 @@
 package mypackage.view;
 
 import javax.swing.*;
+
+import mypackage.model.City;
+import mypackage.model.JournalEntry;
+import mypackage.model.User;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.concurrent.ExecutionException;
 
 public class genericJournalPanels extends JPanel implements ActionListener{
     
@@ -19,7 +25,7 @@ public class genericJournalPanels extends JPanel implements ActionListener{
     //JournalEntry object
     //TODO
 
-    public genericJournalPanels() {
+    public genericJournalPanels(JournalEntry entry) throws InterruptedException, ExecutionException {
         this.panelsWidth = 350;
         this.panelsHeight = 100;
 
@@ -30,17 +36,44 @@ public class genericJournalPanels extends JPanel implements ActionListener{
         this.setSize(panelsWidth, panelsHeight);
         this.setBackground(blueBack);
 
+        //Labels
+        JLabel cityName = new JLabel(City.getCitybyID(entry.getCityID()).getName());
+        JLabel date = new JLabel(entry.getCreationDate());
+        JLabel username = new JLabel(User.getUserByID(entry.getAuthorID()).getUsername());
+        JLabel title = new JLabel(entry.getTitle());
+
+        cityName.setForeground(Color.BLACK); cityName.setFont(new Font("Arial",Font.PLAIN,12));
+        date.setForeground(Color.BLACK); date.setFont(new Font("Arial",Font.PLAIN,12));
+        username.setForeground(Color.BLACK); username.setFont(new Font("Arial",Font.PLAIN,12));
+        title.setForeground(Color.BLACK); title.setFont(new Font("Arial",Font.BOLD,24));
+
+        cityName.setBounds(250,20,100,20);
+        date.setBounds(250,50,100,20);
+        username.setBounds(50,50,100,20);
+        this.add(cityName); this.add(date); this.add(username);
+
+        title.setBounds(350,8,500,50);
+        this.add(title);
+
         //Panel for photo
         JPanel photoPanel = new JPanel();
         photoPanel.setBackground(blueFront);
-        photoPanel.setBounds(20,100,400,270);
+        photoPanel.setBounds(30,90,300,150);
         this.add(photoPanel);
 
         //Panel for entry
         JPanel entryPanel = new JPanel();
         entryPanel.setBackground(blueFront);
-        entryPanel.setBounds(470,35,1350,350);
+        entryPanel.setBounds(350,40,900,200);
+        entryPanel.setLayout(null);
         this.add(entryPanel);
+
+        JTextArea entryArea = new JTextArea(entry.getContent());
+        entryArea.setForeground(Color.BLACK);
+        entryArea.setFont(new Font("Arial",Font.PLAIN,24));
+        entryArea.setBackground(null);
+        entryArea.setBounds(10,10,900,200);
+        entryPanel.add(entryArea);
 
         //Menu Button
         RoundedButton dots = new RoundedButton("...", 10);
@@ -153,10 +186,10 @@ public class genericJournalPanels extends JPanel implements ActionListener{
                     
                 });
                 menu.add(deleteEntry);
-                menu.setBounds(1600,4,200,300);
+                menu.setBounds(70,4,200,250);
             }
         });
-        dots.setBounds(1815,0,40,40);
+        dots.setBounds(20,0,40,40);
         dots.setBorder(null);
         this.add(dots);
         this.add(menu);
