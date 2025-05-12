@@ -12,16 +12,8 @@ import java.io.File;
 import java.io.IOException;
 import mypackage.model.*;
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.*;
+
 
 
 /*
@@ -139,7 +131,7 @@ public class editProfilePanel extends JPanel {
         // Profil picture
         BufferedImage bufferedImage=null;
         try {
-            bufferedImage = ImageIO.read(new File(user.getProfilePicURL()));
+            bufferedImage = ImageIO.read(new File(user.getPhotoURL()));
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

@@ -5,91 +5,75 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class signup extends JFrame implements ActionListener{
-    String nameSurname;
-    String username;
-    String email;
-    String password;
-    boolean visible;
-    static Color darkBlue = new Color(19,51,91);
-    static Color lightBlue = new Color(174,195,224);
-    static Color button = new Color(55,127,188);
-    static Font font = new Font("Arial",Font.PLAIN,24);
+public class signup extends JFrame implements ActionListener
+{
+    public JTextField txtNameSurname;
+    public JTextField txtUsername;
+    public JTextField txtEmail;
+    public JPasswordField txtPassword;
+    public JButton create;
+    public JButton goToLogin;
 
-    public signup() {
-        this.visible = false;
+    private static final Color DARK_BLUE = new Color(19, 51, 91);
+    private static final Color LIGHT_BLUE = new Color(174, 195, 224);
+    private static final Color BUTTON_BLUE = new Color(55, 127, 188);
+    private static final Font  FONT_24 = new Font("Arial", Font.PLAIN, 24);
 
-        setTitle("Email");
+    public signup()
+    {
+        setTitle("Sign Up");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
-        getContentPane().setBackground(lightBlue);
-        setSize(new Dimension(800,800));
+        getContentPane().setBackground(LIGHT_BLUE);
+        setSize(new Dimension(800, 800));
 
-        //Sign Up label 
-        JLabel label = new JLabel("Sign Up");
-        label.setBounds(250,0,400,150);
-        label.setFont(new Font("SansSerif",Font.BOLD,40));
-        label.setForeground(darkBlue);
-        this.add(label);
+        JLabel heading = new JLabel("Sign Up");
+        heading.setFont(new Font("SansSerif", Font.BOLD, 40));
+        heading.setForeground(DARK_BLUE);
+        heading.setBounds(250, 0, 400, 150);
+        add(heading);
 
-        //Name Surname 
-        JTextField txtNameSurname = new JTextField("Name Surname");
-        txtNameSurname.setBounds(50,130,600,50);
-        txtNameSurname.setFont(font);
-        this.add(txtNameSurname);
+        txtNameSurname = new JTextField("Name Surname");
+        txtNameSurname.setBounds(50, 130, 600, 50);
+        txtNameSurname.setFont(FONT_24);
+        add(txtNameSurname);
 
-        //Username
-        JTextField txtUsername = new JTextField("Username");
-        txtUsername.setBounds(50,200,600,50);
-        txtUsername.setFont(font);
-        this.add(txtUsername);
+        txtUsername = new JTextField("Username");
+        txtUsername.setBounds(50, 200, 600, 50);
+        txtUsername.setFont(FONT_24);
+        add(txtUsername);
 
-        //Email
-        JTextField txtEmail = new JTextField("Email");
-        txtEmail.setBounds(50,270,600,50);
-        txtEmail.setFont(font);
-        this.add(txtEmail);
+        txtEmail = new JTextField("Email");
+        txtEmail.setBounds(50, 270, 600, 50);
+        txtEmail.setFont(FONT_24);
+        add(txtEmail);
 
-        //Password
-        JTextField txtPassword = new JTextField("Password");
-        txtPassword.setBounds(50,340,600,50);
-        txtPassword.setFont(font);
-        this.add(txtPassword);
+        txtPassword = new JPasswordField("Password");
+        txtPassword.setBounds(50, 340, 600, 50);
+        txtPassword.setFont(FONT_24);
+        add(txtPassword);
 
-        //Create Button
-        JButton create = new JButton("Create new account");
-        create.setBackground(button);
+        create = new RoundedButton("Create new account", 20);
+        create.setBackground(BUTTON_BLUE);
         create.setForeground(Color.WHITE);
-        create.setFont(font);
-        create.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // TODO Auto-generated method stub
-            }
-        });
-        create.setBounds(100,450,500,50);
-        this.add(create);
+        create.setFont(FONT_24);
+        create.setBounds(100, 450, 500, 50);
+        create.addActionListener(this);
+        add(create);
 
-        //X button
-        JButton x = new JButton("X");
-        x.setBackground(lightBlue);
-        x.setForeground(darkBlue);
-        x.setFont(new Font("Arial",Font.BOLD,30));
-        x.setBorder(null);
-        x.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // TODO
-            }
-        });
-        x.setBounds(700,0,100,50);
-        this.add(x);
+        goToLogin = new RoundedButton("Back to Login", 20);
+        goToLogin.setBackground(BUTTON_BLUE);
+        goToLogin.setForeground(Color.WHITE);
+        goToLogin.setFont(FONT_24);
+        goToLogin.setBounds(100, 520, 500, 50);
+        goToLogin.addActionListener(this);
+        add(goToLogin);
 
-        setVisible(visible);
+        setVisible(false);
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        throw new UnsupportedOperationException("Unimplemented method 'actionPerformed'");
+    @Override public void actionPerformed(ActionEvent e)
+    { 
+
     }
 }

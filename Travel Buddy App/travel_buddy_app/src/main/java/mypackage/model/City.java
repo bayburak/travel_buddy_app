@@ -28,7 +28,13 @@ public class City {
         allCities = MapService.readCities();
     }
 
-    public List<JournalEntry> getEntriesbyCity(){
+
+    public static City getCitybyID(String ID){
+        for(City aCity: allCities){
+            if(aCity.cityID.equals(ID) ){
+                return aCity;
+            }
+        }
         return null;
     }
     public void incrementEntryCount(){ entryCount++; }
