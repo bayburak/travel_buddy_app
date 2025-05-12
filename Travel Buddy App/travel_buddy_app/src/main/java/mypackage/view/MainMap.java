@@ -64,7 +64,7 @@
 
         public JButton getProfileBtn()
         {
-            return getProfileBtn();
+            return ProfileBtn;
         }
 
     }
