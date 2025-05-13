@@ -459,7 +459,7 @@
         
                     for (DataSnapshot entrySnapshot : snapshot.getChildren()) {
                         JournalEntry entry = entrySnapshot.getValue(JournalEntry.class);
-                        if (entry != null) {
+                        if (entry != null && entry.isPublicEntry() ) {
                             allEntries.add(entry);
                         }
                     }
