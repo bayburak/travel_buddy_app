@@ -1,5 +1,6 @@
 package mypackage.view;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import mypackage.model.City;
 import mypackage.model.JournalEntry;
@@ -8,7 +9,12 @@ import mypackage.model.User;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
 import java.util.concurrent.ExecutionException;
+import java.awt.image.BufferedImage;
 
 public class genericJournalPanels extends JPanel implements ActionListener {
     
@@ -80,10 +86,39 @@ public class genericJournalPanels extends JPanel implements ActionListener {
         this.add(title);
 
         // Panel for photo
-        JPanel photoPanel = new JPanel();
-        photoPanel.setBackground(blueFront);
-        photoPanel.setBounds(30,90,300,150);
-        this.add(photoPanel);
+         if(entry.getPhotoURL() != null && entry.getPhotoURL() != ""){
+            BufferedImage image = null;
+        try {
+            URI uri = URI.create(entry.getPhotoURL());
+            URL url = uri.toURL();  
+            
+            try (InputStream in = url.openStream()) {
+                
+                image = ImageIO.read(in);
+
+                if (image != null) {
+                    System.out.println("Image successfully read!");
+                } else {
+                    System.out.println("Failed to decode the image.");
+                }
+            }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }        
+
+            JLabel photoLabel;
+            photoLabel = new JLabel(new ImageIcon(image));
+            photoLabel.setBackground(blueFront);
+            photoLabel.setBounds(30,90,300,150);
+            this.add(photoLabel);
+        }
+        else{
+            JPanel photopanel = new JPanel();
+            photopanel.setBackground(blueFront);
+            photopanel.setBounds(30,90,300,150);
+            this.add(photopanel);
+            
+        }
 
         // Panel for entry
         JPanel entryPanel = new JPanel();
