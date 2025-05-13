@@ -18,6 +18,7 @@ public class favorites extends JPanel implements ActionListener{
     int screenWidth = screenSize.width;
     int screenHeight = screenSize.height;
     List<JournalEntry> favorites;
+    JButton backButton;
 
     public favorites(User user) throws InterruptedException, ExecutionException {
 
@@ -37,16 +38,14 @@ public class favorites extends JPanel implements ActionListener{
         topBlue.setPreferredSize(new Dimension(screenWidth, 70));
     
         //Back Button
-        JButton backButton = new JButton("←");
+        backButton = new JButton("←");
         backButton.setFont(new Font("Arial", Font.BOLD, 50));
         backButton.setForeground(Color.WHITE);
         backButton.setBackground(blue);
+        backButton.setContentAreaFilled(false);
         backButton.setBorder(BorderFactory.createEmptyBorder());
         backButton.setFocusPainted(false);
         backButton.setBounds(10, 0, 100, 60);
-        backButton.addActionListener(e -> {
-            //TODO
-        });
         topBlue.add(backButton);
     
         
