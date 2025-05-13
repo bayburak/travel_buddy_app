@@ -46,9 +46,6 @@ public class explore extends JPanel implements ActionListener {
         backButton.setBorder(BorderFactory.createEmptyBorder());
         backButton.setFocusPainted(false);
         backButton.setBounds(10, 0, 100, 60);
-        backButton.addActionListener(e -> {
-            //TODO
-        });
         topBlue.add(backButton);
 
         JLabel returnProfile = new JLabel("Explore");
