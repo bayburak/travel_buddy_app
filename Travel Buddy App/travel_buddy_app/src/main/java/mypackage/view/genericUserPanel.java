@@ -3,7 +3,6 @@ package mypackage.view;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-import mypackage.model.JournalEntry;
 import mypackage.model.User;
 
 import java.awt.*;

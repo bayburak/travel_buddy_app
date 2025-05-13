@@ -17,7 +17,7 @@
         private static final Color BAR_COLOR = new Color(34,  86, 153);
         private static final Color BUTTON_COLOR = new Color(19,  49,  88);
         private static final Font BUTTON_FONT  = new Font("Arial", Font.BOLD, 12);
-        private static final int BAR_HEIGHT = 70;
+        
 
         public MainMap()
         {

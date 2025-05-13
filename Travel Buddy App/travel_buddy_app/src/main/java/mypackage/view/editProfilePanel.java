@@ -6,11 +6,9 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -40,10 +38,6 @@ public class editProfilePanel extends JPanel {
     private JButton editPhotoButton;
     private JButton changePasswordButton;
     private JButton saveButton;
-    private JTextField nameSurnameField;
-    private JTextField usernameField;
-    private JTextField emailField;
-    private JTextArea aboutMeTextArea;
 
     public editProfilePanel(User user) {
         this.user = user;
@@ -143,6 +137,7 @@ public class editProfilePanel extends JPanel {
             }
         //
 
+        // 3) Now it’s safe to circle‐crop
         BufferedImage roundedImage = (RoundImage.makePerfectCircle(image, 200,Color.GRAY,1));
         
         
@@ -159,13 +154,22 @@ public class editProfilePanel extends JPanel {
         editPhotoButton.setBackground(darkBlue);
         editPhotoButton.setForeground(Color.WHITE);
         editPhotoButton.setPreferredSize(new Dimension(20, 30));
+        editPhotoButton.addActionListener(e -> {
+            new PhotoUploader(filePath ->{
+                try {
+                    user.setProfilePic(filePath);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            });
+        });
         informationPanel.add(editPhotoButton);
         informationPanel.add(Box.createVerticalStrut(20));
 
         // Name and surname
         JPanel namePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 25, 0));
         namePanel.setBackground(lightBlue);
-        nameSurnameField = new JTextField(user.getNameSurname());
+        JTextField nameSurnameField = new JTextField(user.getNameSurname());
         nameSurnameField.setFont(new Font("Arial", Font.PLAIN, 20));
         nameSurnameField.setForeground(Color.GRAY);
         nameSurnameField.setEditable(true);
@@ -178,7 +182,7 @@ public class editProfilePanel extends JPanel {
         // Username
         JPanel usernamePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 25, 0));
         usernamePanel.setBackground(lightBlue);
-        usernameField = new JTextField(user.getUsername());
+        JTextField usernameField = new JTextField(user.getUsername());
         usernameField.setFont(new Font("Arial", Font.PLAIN, 20));
         usernameField.setPreferredSize(new Dimension(380, 30));
         usernameField.setForeground(Color.GRAY);
@@ -191,7 +195,7 @@ public class editProfilePanel extends JPanel {
         // e-mail
         JPanel emailPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 25, 0));
         emailPanel.setBackground(lightBlue);
-        emailField = new JTextField(user.getE_mail());
+        JTextField emailField = new JTextField(user.getE_mail());
         emailField.setFont(new Font("Arial", Font.PLAIN, 20));
         emailField.setPreferredSize(new Dimension(380, 30));
         emailField.setForeground(Color.GRAY);
@@ -243,7 +247,7 @@ public class editProfilePanel extends JPanel {
         panel.add(headerPanel);
 
         // about-me text area
-        aboutMeTextArea = new JTextArea(user.getAboutMe());
+        JTextArea aboutMeTextArea = new JTextArea(user.getAboutMe());
         aboutMeTextArea.setBackground(bioColor);
         aboutMeTextArea.setEditable(true);
         aboutMeTextArea.setLineWrap(true);
@@ -307,22 +311,5 @@ public class editProfilePanel extends JPanel {
     /** Save button */
     public JButton getSaveButton() {
         return saveButton;
-    }
-    
-    public JTextField getNameSurname()
-    {
-        return nameSurnameField;
-    }
-    public JTextField getUsernameField()
-    {
-        return usernameField;
-    }    
-    public JTextField getEmailField()
-    {
-        return emailField;
-    }
-    public JTextArea getAboutMeTextArea()
-    {
-        return aboutMeTextArea;
     }
 }
