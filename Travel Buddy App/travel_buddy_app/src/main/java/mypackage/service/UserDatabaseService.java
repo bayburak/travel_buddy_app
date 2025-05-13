@@ -47,7 +47,7 @@ public class UserDatabaseService extends DatabaseService {
 
         
         
-        
+        StorageService.deleteFile("profile_picture/user" + userID );
         DatabaseReference entriesReference = database.child("users").child(userID).child("entries");
         
         

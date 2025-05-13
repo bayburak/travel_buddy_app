@@ -55,6 +55,9 @@
 
         
         public static void deleteJournalEntry(String entryId, Runnable callback) {
+
+            StorageService.deleteFile("entry_pictures/entry" + entryId);
+            
             database.child("journalEntries").child(entryId).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
