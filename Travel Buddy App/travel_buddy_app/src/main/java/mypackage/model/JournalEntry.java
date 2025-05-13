@@ -158,4 +158,9 @@ public class JournalEntry {
     public String toString(){
         return this.title + " " + this.getContent(); 
     }
+
+    public boolean equal(Object obj){
+        User user = (User) obg;
+        return user.getUserID().equals(this.getUserID());
+    }
 }
