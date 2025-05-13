@@ -1,3 +1,4 @@
+
 package mypackage.view;
 
 import javax.imageio.ImageIO;
@@ -155,11 +156,24 @@ public class genericJournalPanels extends JPanel implements ActionListener {
             addFav.setFocusPainted(false);
             addFav.setForeground(Color.WHITE);
             addFav.setFont(new Font("Arial",Font.BOLD,15));
-            if (isFaved) {
+            if (isFaved) 
+            {
+                addFav.setText("");
                 addFav.setText("Remove from Favorites");
-            } else {
+            } 
+            else 
+            {
+                addFav.setText("");
                 addFav.setText("Add to Favorites");
             }
+            addFav.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent arg0) {
+                    toggleFollow(e,entry);
+                }
+                
+
+            });
 
             // Edit photo
             editPhoto = new JButton("Edit Photo");
@@ -254,6 +268,22 @@ public class genericJournalPanels extends JPanel implements ActionListener {
         this.setComponentZOrder(menu, 0);
 
     }
+        public void toggleFollow(ActionEvent e, JournalEntry entry) 
+        {
+        isFaved = !isFaved;
+        if (isFaved) {
+            user.addToSaved(entry.getEntryID());
+            JOptionPane.showMessageDialog(null, "Successfully added to favorites!", null, JOptionPane.INFORMATION_MESSAGE);
+            addFav.setText("");
+            addFav.setText("Remove from Favorites");
+        } else {
+            user.removeFromSaved(entry.getEntryID());
+            JOptionPane.showMessageDialog(null, "Successfully removed from favorites", null, JOptionPane.INFORMATION_MESSAGE);
+            addFav.setText("");
+            addFav.setText("Add to Favorites");
+        }
+        this.repaint();
+        }
 
    
     @Override
