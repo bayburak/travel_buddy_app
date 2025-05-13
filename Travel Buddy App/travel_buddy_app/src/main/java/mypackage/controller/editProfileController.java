@@ -1,8 +1,11 @@
 package mypackage.controller;
 
+import java.io.IOException;
+
 import javax.swing.*;
 import mypackage.model.User;
 import mypackage.service.UserDatabaseService;
+import mypackage.view.PhotoUploader;
 import mypackage.view.editProfilePanel;
 import mypackage.view.login;
 import mypackage.view.newPassword;
@@ -55,14 +58,6 @@ public class editProfileController
                 host.toFront();
                 host.requestFocus();
                 host.setVisible(true);
-                try 
-                {
-                    Thread.sleep(10);
-                } catch (InterruptedException e1) 
-                {
-                    e1.printStackTrace();
-                }
-                profileFrame.dispose();
             });
 
             editPanel.getDeleteAccountButton().addActionListener( e -> { //delete account
@@ -98,6 +93,21 @@ public class editProfileController
                     UserDatabaseService.updateUserProfile(user);
                     pass.dispose();
                 }));
+            });
+
+            editPanel.getEditPhotoButton().addActionListener(e -> { //edit photo
+                JFrame frame = new PhotoUploader(filePath ->{
+                    try {
+                        user.setProfilePic(filePath);
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                    new ProfileController().open(host);;
+                    editFrame.dispose();
+                    profileFrame.dispose();
+                });
+
+
             });
 
             editFrame.setContentPane(editPanel);
