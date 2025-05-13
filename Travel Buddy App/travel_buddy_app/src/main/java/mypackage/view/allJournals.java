@@ -19,6 +19,7 @@ public class allJournals extends JPanel implements ActionListener{
     int screenHeight = screenSize.height;
     boolean showPublic;
     List<JournalEntry> entries;
+    JButton backButton;
 
     public allJournals(User user, boolean showPublic) throws InterruptedException, ExecutionException {
 
@@ -42,7 +43,7 @@ public class allJournals extends JPanel implements ActionListener{
         topBlue.setPreferredSize(new Dimension(screenWidth, 70));
     
         //Back Button
-        JButton backButton = new JButton("←");
+        backButton = new JButton("←");
         backButton.setFont(new Font("Arial", Font.BOLD, 50));
         backButton.setForeground(Color.WHITE);
         backButton.setBackground(blue);
@@ -50,9 +51,6 @@ public class allJournals extends JPanel implements ActionListener{
         backButton.setBorder(BorderFactory.createEmptyBorder());
         backButton.setFocusPainted(false);
         backButton.setBounds(10, 0, 100, 60);
-        backButton.addActionListener(e -> {
-            //TODO
-        });
         topBlue.add(backButton);
     
         
@@ -89,6 +87,10 @@ public class allJournals extends JPanel implements ActionListener{
     }
 
 
+    
+    public JButton getBackButton() {
+        return backButton;
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
