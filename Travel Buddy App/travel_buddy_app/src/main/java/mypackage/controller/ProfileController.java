@@ -28,6 +28,25 @@ public class ProfileController {
                 new editProfileController(profileFrame, currentUser, host).open();
             });
 
+            JFrame displayJournalEntries = new JFrame();
+            profilePanel.getJournalEntriesButton().addActionListener(e -> {
+                try {
+                    allJournals entries = new allJournals(currentUser, false);
+                    entries.getBackButton().addActionListener(a -> {
+                        displayJournalEntries.dispose();
+                        profileFrame.setVisible( true);
+                    });
+                    displayJournalEntries.add( entries);
+                    displayJournalEntries.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                    displayJournalEntries.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE);
+                    displayJournalEntries.setVisible(true);
+                    host.setVisible(false);
+                    profileFrame.setVisible( false);
+                } catch (InterruptedException | ExecutionException e1) {
+                    e1.printStackTrace();
+                }
+            });
+            
             profileFrame.setContentPane(profilePanel);
             profileFrame.invalidate();
             profileFrame.pack();
