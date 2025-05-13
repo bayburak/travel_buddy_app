@@ -6,8 +6,6 @@ import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.function.Consumer;
@@ -69,7 +67,7 @@ public class PhotoUploader extends JFrame {
         // Upload button
         uploadButton.setEnabled(false);
         uploadButton.setBackground(new Color(20, 79, 147));
-        uploadButton.setForeground(Color.BLACK);
+        uploadButton.setForeground(Color.WHITE);
         uploadButton.setFont(new Font("Arial", Font.BOLD, 16));
         uploadButton.setFocusPainted(false);
         uploadButton.addActionListener(e -> {

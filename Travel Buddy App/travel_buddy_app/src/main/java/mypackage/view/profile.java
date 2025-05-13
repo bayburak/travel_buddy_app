@@ -7,7 +7,6 @@ import mypackage.model.User;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -50,15 +49,11 @@ public class profile extends JPanel {
         panel.setBackground(darkBlue);
         panel.setPreferredSize(new Dimension(0, 70)); // height = 70
 
-        // Back Button
-        backButton = new JButton("←");
+        backButton = new JButton(" ←");
         backButton.setFont(new Font("Arial", Font.BOLD, 50));
         backButton.setForeground(Color.WHITE);
-        backButton.setBackground(Color.blue);
-        backButton.setContentAreaFilled(false);
         backButton.setBorder(BorderFactory.createEmptyBorder());
-        backButton.setFocusPainted(false);
-        backButton.setBounds(10, 0, 100, 60);
+        backButton.setContentAreaFilled(false);
         // default no-op; external code can attach via getBackButton()
         backButton.addActionListener((ActionEvent e) -> { /* TODO: navigate back */ });
 
