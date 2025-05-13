@@ -78,7 +78,7 @@ public class genericUserPanel extends JPanel{
         this.add(visit);
     }
 
-    public RoundedButton getVisit() {
+    public RoundedButton getVisitButton() {
         return visit;
     }
 }
