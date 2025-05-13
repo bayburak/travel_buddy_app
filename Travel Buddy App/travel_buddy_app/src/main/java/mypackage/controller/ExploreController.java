@@ -23,7 +23,7 @@ public class ExploreController
 
             try 
             {
-                explorePanel = new explore();
+                explorePanel = new explore(currentUser);
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
