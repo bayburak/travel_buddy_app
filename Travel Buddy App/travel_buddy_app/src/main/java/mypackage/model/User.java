@@ -192,5 +192,10 @@ public class User {
     public String toString(){
         return this.getNameSurname() + " "+this.getUsername() + " " + this.getUserID();
     }
-
+    
+    @Override
+    public boolean equals( Object obj) {
+        User user = ((User) obj);
+        return (user.getUserID().equals(this.getUserID()));
+    }
 }
