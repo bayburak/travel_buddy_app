@@ -1,8 +1,6 @@
 package mypackage.view;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
-
 import mypackage.model.City;
 import mypackage.model.JournalEntry;
 import mypackage.model.User;
@@ -10,11 +8,6 @@ import mypackage.model.User;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URL;
 import java.util.concurrent.ExecutionException;
 
 public class genericJournalPanels extends JPanel implements ActionListener{
@@ -26,17 +19,37 @@ public class genericJournalPanels extends JPanel implements ActionListener{
     static Font menuText = new Font("Arial",Font.BOLD,19);
     int panelsWidth;
     int panelsHeight;
-    //variables to keep track of the users entries' feautures
-    //date, city name, pp, etc.
-    //JournalEntry object
-    
-    
-    
-    //TODO explore to only public entries
+    User user;
 
-    public genericJournalPanels(JournalEntry entry) throws InterruptedException, ExecutionException {
+    User visitor;
+
+    JournalEntry entry;
+    static boolean isFaved;
+    JButton addFav;
+    JButton editPhoto;
+    JButton deletePhoto;
+    JButton editText;
+    JButton deleteText;
+    JButton deleteEntry;
+
+
+    public genericJournalPanels(JournalEntry entry,User visitor) throws InterruptedException, ExecutionException {
+        this.entry = entry;
+        this.visitor = visitor;
+
+        
         this.panelsWidth = 350;
         this.panelsHeight = 100;
+
+        user = User.getUserByID(entry.getAuthorID());
+        if (user.getSavedEntries().contains(entry)) {
+            isFaved = true;
+        }
+        else {
+
+            isFaved = false;
+
+        }
 
         JPanel menu = new JPanel();
         menu.setVisible(false);
@@ -65,42 +78,10 @@ public class genericJournalPanels extends JPanel implements ActionListener{
         this.add(title);
 
         //Panel for photo
-        
-        if(entry.getPhotoURL() != null && entry.getPhotoURL() != ""){
-            BufferedImage image = null;
-        try {
-            URI uri = URI.create(entry.getPhotoURL());
-            URL url = uri.toURL();  
-            
-            try (InputStream in = url.openStream()) {
-                
-                image = ImageIO.read(in);
-
-                if (image != null) {
-                    System.out.println("Image successfully read!");
-                } else {
-                    System.out.println("Failed to decode the image.");
-                }
-            }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }        
-
-            JLabel photoLabel;
-            photoLabel = new JLabel(new ImageIcon(image));
-            photoLabel.setBackground(blueFront);
-            photoLabel.setBounds(30,90,300,150);
-            this.add(photoLabel);
-        }
-        else{
-            JPanel photopanel = new JPanel();
-            photopanel.setBackground(blueFront);
-            photopanel.setBounds(30,90,300,150);
-            this.add(photopanel);
-            
-        }
-        
-        
+        JPanel photoPanel = new JPanel();
+        photoPanel.setBackground(blueFront);
+        photoPanel.setBounds(30,90,300,150);
+        this.add(photoPanel);
 
         //Panel for entry
         JPanel entryPanel = new JPanel();
@@ -113,7 +94,9 @@ public class genericJournalPanels extends JPanel implements ActionListener{
         entryArea.setForeground(Color.BLACK);
         entryArea.setFont(new Font("Arial",Font.PLAIN,24));
         entryArea.setBackground(null);
-        entryArea.setBounds(10,10,900,200);
+        entryArea.setBounds(20, 20, 880, 180);
+        entryArea.setLineWrap(true);
+        entryArea.setWrapStyleWord(true);
         entryPanel.add(entryArea);
 
         //Menu Button
@@ -129,105 +112,93 @@ public class genericJournalPanels extends JPanel implements ActionListener{
                 if (menu.isVisible()) {
                     menu.removeAll();
                 }
-                menu.setLayout(new GridLayout(6,1));
+
+
                 //Add to favorites
-                //Edit photo
-                JButton addFav = new JButton("Add/Remove Favorites");
+                addFav = new JButton();
                 addFav.setBackground(blueMenu);
                 addFav.setBorder(null);
                 addFav.setFocusPainted(false);
                 addFav.setForeground(Color.WHITE);
                 addFav.setFont(new Font("Arial",Font.BOLD,15));
+                if (isFaved) {
+                    addFav.setText("");
+                    addFav.setText("Remove from Favorites");
+                } else {
+                    addFav.setText("");
+                    addFav.setText("Add to Favorites");
+                }
                 addFav.addActionListener(new ActionListener() {
 
                     @Override
-                    public void actionPerformed(ActionEvent e) {
-                        // TODO
+                    public void actionPerformed(ActionEvent arg0) {
+                        toggleFollow(e,entry);
                     }
                     
+
                 });
-                menu.add(addFav);
+
+
                 //Edit photo
-                JButton editPhoto = new JButton("Edit Photo");
+                editPhoto = new JButton("Edit Photo");
                 editPhoto.setBackground(blueMenu);
                 editPhoto.setBorder(null);
                 editPhoto.setFocusPainted(false);
                 editPhoto.setForeground(Color.WHITE);
                 editPhoto.setFont(menuText);
-                editPhoto.addActionListener(new ActionListener() {
 
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        // TODO
-                    }
-                    
-                });
-                menu.add(editPhoto);
+
                 //Delete photo
-                JButton deletePhoto = new JButton("Delete Photo");
+                deletePhoto = new JButton("Delete Photo");
                 deletePhoto.setBackground(blueMenu);
                 deletePhoto.setBorder(null);
                 deletePhoto.setFocusPainted(false);
                 deletePhoto.setForeground(Color.WHITE);
                 deletePhoto.setFont(menuText);
-                deletePhoto.addActionListener(new ActionListener() {
 
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        // TODO
-                    }
-                    
-                });
-                menu.add(deletePhoto);
+
                 //Edit text
-                JButton editText = new JButton("Edit Text");
+                editText = new JButton("Edit Text");
                 editText.setBackground(blueMenu);
                 editText.setBorder(null);
                 editText.setFocusPainted(false);
                 editText.setForeground(Color.WHITE);
                 editText.setFont(menuText);
-                editText.addActionListener(new ActionListener() {
 
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        // TODO
-                    }
-                    
-                });
-                menu.add(editText);
+
                 //Delete text
-                JButton deleteText = new JButton("Delete Text");
+                deleteText = new JButton("Delete Text");
                 deleteText.setBackground(blueMenu);
                 deleteText.setBorder(null);
                 deleteText.setFocusPainted(false);
                 deleteText.setForeground(Color.WHITE);
                 deleteText.setFont(menuText);
-                deleteText.addActionListener(new ActionListener() {
 
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        // TODO
-                    }
-                    
-                });
-                menu.add(deleteText);
+
                 //Delete Entry
-                JButton deleteEntry = new JButton("Delete Entry");
+                deleteEntry = new JButton("Delete Entry");
                 deleteEntry.setBackground(blueMenu);
                 deleteEntry.setBorder(null);
                 deleteEntry.setFocusPainted(false);
                 deleteEntry.setForeground(Color.WHITE);
                 deleteEntry.setFont(menuText);
-                deleteEntry.addActionListener(new ActionListener() {
-
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        // TODO
-                    }
-                    
-                });
-                menu.add(deleteEntry);
-                menu.setBounds(70,4,200,250);
+                
+                if (user.getUserID().equals(visitor.getUserID())) {
+                    menu.setLayout(new GridLayout(6,1));
+                    menu.setBounds(70,4,200,250);
+                    menu.add(addFav);
+                    menu.add(editPhoto);
+                    menu.add(deletePhoto);
+                    menu.add(editText);
+                    menu.add(deleteText);
+                    menu.add(deleteEntry);
+                }
+                
+                else {
+                    menu.setLayout(new GridLayout(1,1));
+                    menu.setBounds(70,4,200,50);
+                    menu.add(addFav);
+                }
             }
         });
         dots.setBounds(20,0,40,40);
@@ -238,10 +209,31 @@ public class genericJournalPanels extends JPanel implements ActionListener{
 
     }
 
+    public void toggleFollow(ActionEvent e, JournalEntry entry) {
+        isFaved = !isFaved;
+        if (isFaved) {
+            user.addToSaved(entry.getEntryID());
+            JOptionPane.showMessageDialog(null, "Successfully added to favorites!", null, JOptionPane.INFORMATION_MESSAGE);
+            addFav.setText("");
+            addFav.setText("Remove from Favorites");
+        } else {
+            user.removeFromSaved(entry.getEntryID());
+            JOptionPane.showMessageDialog(null, "Successfully removed from favorites", null, JOptionPane.INFORMATION_MESSAGE);
+            addFav.setText("");
+            addFav.setText("Add to Favorites");
+        }
+        this.repaint();
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         throw new UnsupportedOperationException("Unimplemented method 'actionPerformed'");
     }
+
+    public JButton getEditPhotoBtn() {return editPhoto;}
+    public JButton getDeletePhotoBtn() {return deletePhoto;}
+    public JButton getEditTextBtn() {return editText;}
+    public JButton getDeleteEntryBtn() {return deleteEntry;}
 
     
 }
