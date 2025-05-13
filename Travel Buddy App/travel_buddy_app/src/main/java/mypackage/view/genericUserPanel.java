@@ -3,41 +3,32 @@ package mypackage.view;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import mypackage.model.User;
-
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
-public class genericUserPanel extends JPanel {
+public class genericUserPanel extends JPanel{
     
     static Color blueBack = new Color(204,228,252);
     static Color blueFront = new Color(180,204,244);
     private BufferedImage image;
-
-    // Components to provide getters
-    JLabel imageLabel;
-    JLabel name;
-    JLabel username;
     RoundedButton visit;
-    JPanel namePanel;
 
     public genericUserPanel(User user) {
-
+        
         this.setBackground(blueBack);
         this.setSize(new Dimension(200,200));
         this.setLayout(null);
-
-        // Load the profile picture
+        
         try {
-            URI uri = URI.create("https://firebasestorage.googleapis.com/v0/b/travelbuddyapp-35c7b.firebasestorage.app/o/profile_photos%2Fdefault.jpeg?alt=media&token=6a937830-968e-4f9a-9d1e-0ed330fbbe91");
-            URL url = uri.toURL(); 
+            URI uri = URI.create(user.getPhotoURL());
+            URL url = uri.toURL();  // Preferred over new URL(String)
             
             try (InputStream in = url.openStream()) {
+                
                 image = ImageIO.read(in);
 
                 if (image != null) {
@@ -50,72 +41,44 @@ public class genericUserPanel extends JPanel {
             e.printStackTrace();
         }
 
-        BufferedImage roundedImage = (RoundImage.makePerfectCircle(image, 80, Color.WHITE, 2));
-        imageLabel = new JLabel(new ImageIcon(roundedImage));
+        
+        BufferedImage roundedImage = (RoundImage.makePerfectCircle(image, 80,Color.WHITE,2));
+        JLabel imageLabel = new JLabel(new ImageIcon(roundedImage));
         imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
         imageLabel.setVerticalAlignment(SwingConstants.CENTER);
-        imageLabel.setBounds(150, 30, 100, 100);
+        imageLabel.setBounds(150,30,100,100);
         this.add(imageLabel);
+        
 
-        // Name Panel
-        namePanel = new JPanel();
+
+        //Name Panel
+        JPanel namePanel = new JPanel();
         namePanel.setBackground(blueFront);
         namePanel.setSize(300,300);
         namePanel.setBounds(80,150,260,150);
         namePanel.setLayout(null);
 
-        name = new JLabel(user.getNameSurname());
-        username = new JLabel(user.getUsername());
-
-        name.setForeground(Color.BLACK); 
-        name.setFont(new Font("Arial",Font.BOLD,18));
-
-        username.setForeground(Color.BLACK); 
-        username.setFont(new Font("Arial",Font.PLAIN,12));
-
+        JLabel name = new JLabel(user.getNameSurname());
+        JLabel username = new JLabel(user.getUsername());
+        name.setForeground(Color.BLACK); name.setFont(new Font("Arial",Font.BOLD,18));
+        username.setForeground(Color.BLACK); username.setFont(new Font("Arial",Font.PLAIN,12));
         name.setBounds(10,20,400,100);
         username.setBounds(10,80,400,100);
-
         namePanel.add(name);
         namePanel.add(username);
         this.add(namePanel);
 
-        // Visit Profile Button
+        //Visit Profile Button
         visit = new RoundedButton("Visit Profile",20);
         visit.setForeground(Color.WHITE);
         visit.setBackground(new Color(55,127,188));
         visit.setBorder(null);
         visit.setFont(new Font("Arial",Font.BOLD,12));
-        visit.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // TODO
-            }
-        });
         visit.setBounds(100,320,200,50);
         this.add(visit);
     }
 
-    //       Getters Added
-
-    public JLabel getImageLabel() {
-        return imageLabel;
-    }
-
-    public JLabel getNameLabel() {
-        return name;
-    }
-
-    public JLabel getUsernameLabel() {
-        return username;
-    }
-
     public RoundedButton getVisitButton() {
         return visit;
-    }
-
-    public JPanel getNamePanel() {
-        return namePanel;
     }
 }
