@@ -31,11 +31,11 @@ public class allJournals extends JPanel implements ActionListener{
         this.setLayout(new BorderLayout());
 
         if (showPublic) {
-            entries = user.getPublicEntries();
+            entries = user.PublicEntries();
         }
 
         else {
-            entries = user.getUserEntries();
+            entries = user.UserEntries();
         }
     
         //Top Blue Panel
@@ -93,9 +93,9 @@ public class allJournals extends JPanel implements ActionListener{
     {
         try {
             if (showPublic) {
-                entries = user.getPublicEntries();
+                entries = user.PublicEntries();
             } else {
-                entries = user.getUserEntries();
+                entries = user.UserEntries();
             }
 
             contentPanel.removeAll();

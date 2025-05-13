@@ -29,7 +29,7 @@ public class favorites extends JPanel implements ActionListener{
         this.setLayout(new BorderLayout());
     
         try {
-            this.favorites = user.getSavedEntries();
+            this.favorites = user.SavedEntries();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
@@ -87,7 +87,7 @@ public class favorites extends JPanel implements ActionListener{
     public void refreshEntries() 
     {
     try {
-        favorites = user.getSavedEntries();
+        favorites = user.SavedEntries();
         contentPanel.removeAll();
 
         int panelHeight = favorites.size() * 300;

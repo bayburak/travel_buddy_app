@@ -42,10 +42,10 @@ public class genericJournalPanels extends JPanel implements ActionListener {
     JLabel cityName;
     JLabel date;
     JLabel username;
-    JLabel title;
+    JTextArea title;
     JTextArea entryArea;
 
-    public genericJournalPanels(JournalEntry entry, User visitor) throws InterruptedException, ExecutionException {
+    public genericJournalPanels(JournalEntry entry, User visitor, JPanel parent) throws InterruptedException, ExecutionException {
         this.entry = entry;
         this.visitor = visitor;
 
@@ -53,7 +53,7 @@ public class genericJournalPanels extends JPanel implements ActionListener {
         this.panelsHeight = 100;
 
         user = User.getUserByID(entry.getAuthorID());
-        if (user.getSavedEntries().contains(entry)) {
+        if (user.SavedEntries().contains(entry)) {
             isFaved = true;
         } else {
             isFaved = false;
@@ -70,7 +70,10 @@ public class genericJournalPanels extends JPanel implements ActionListener {
         cityName = new JLabel(City.getCitybyID(entry.getCityID()).getName());
         date = new JLabel(entry.getCreationDate());
         username = new JLabel(User.getUserByID(entry.getAuthorID()).getUsername());
-        title = new JLabel(entry.getTitle());
+        title = new JTextArea(entry.getTitle());
+        title.setBackground(blueBack);
+        title.setEditable(false);
+        
 
         cityName.setForeground(Color.BLACK); cityName.setFont(new Font("Arial",Font.PLAIN,12));
         date.setForeground(Color.BLACK); date.setFont(new Font("Arial",Font.PLAIN,12));
@@ -86,7 +89,7 @@ public class genericJournalPanels extends JPanel implements ActionListener {
         this.add(title);
 
         // Panel for photo
-         if(entry.getPhotoURL() != null && entry.getPhotoURL() != ""){
+        if(entry.getPhotoURL() != null && entry.getPhotoURL() != ""){
             BufferedImage image = null;
         try {
             URI uri = URI.create(entry.getPhotoURL());
@@ -98,19 +101,24 @@ public class genericJournalPanels extends JPanel implements ActionListener {
 
                 if (image != null) {
                     System.out.println("Image successfully read!");
+                    JLabel photoLabel;
+                    photoLabel = new JLabel(new ImageIcon(image));
+                    photoLabel.setBackground(blueFront);
+                    photoLabel.setBounds(30,90,300,150);
+            this.add(photoLabel);
                 } else {
                     System.out.println("Failed to decode the image.");
                 }
             }
             } catch (IOException e) {
                 e.printStackTrace();
+                JPanel photopanel = new JPanel();
+                photopanel.setBackground(blueFront);
+                photopanel.setBounds(30,90,300,150);
+                this.add(photopanel);
             }        
 
-            JLabel photoLabel;
-            photoLabel = new JLabel(new ImageIcon(image));
-            photoLabel.setBackground(blueFront);
-            photoLabel.setBounds(30,90,300,150);
-            this.add(photoLabel);
+            
         }
         else{
             JPanel photopanel = new JPanel();
@@ -119,6 +127,7 @@ public class genericJournalPanels extends JPanel implements ActionListener {
             this.add(photopanel);
             
         }
+        
 
         // Panel for entry
         JPanel entryPanel = new JPanel();
@@ -135,6 +144,7 @@ public class genericJournalPanels extends JPanel implements ActionListener {
         entryArea.setLineWrap(true);
         entryArea.setWrapStyleWord(true);
         entryPanel.add(entryArea);
+        entryArea.setEditable(false);
 
         // Menu Button
         RoundedButton dots = new RoundedButton("...", 10);
@@ -154,7 +164,6 @@ public class genericJournalPanels extends JPanel implements ActionListener {
             addFav.setFocusPainted(false);
             addFav.setForeground(Color.WHITE);
             addFav.setFont(new Font("Arial",Font.BOLD,15));
-
             //DO NOT DELETE THIS ANYMORE!!!!!!!!!
             if (isFaved) {
                 addFav.setText("Remove from Favorites");
@@ -178,6 +187,35 @@ public class genericJournalPanels extends JPanel implements ActionListener {
             editPhoto.setFocusPainted(false);
             editPhoto.setForeground(Color.WHITE);
             editPhoto.setFont(menuText);
+            editPhoto.addActionListener(new ActionListener(){
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    new PhotoUploader(fileURL ->{
+                        try {
+                            entry.setPhoto(fileURL);
+                        if (parent instanceof explore) 
+                        {
+                            ((explore) parent).refreshEntries();
+                        } 
+                        else if (parent instanceof cityEntries) 
+                        {
+                            ((cityEntries) parent).refreshEntries();
+                        }  
+                        else if(parent instanceof allJournals)
+                        {
+                            ((allJournals) parent).refreshEntries();
+                        }
+                        else if(parent instanceof favorites)
+                        {
+                            ((favorites) parent).refreshEntries();
+                        }                      
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                    });
+                }
+            });
 
             // Delete photo
             deletePhoto = new JButton("Delete Photo");
@@ -186,22 +224,62 @@ public class genericJournalPanels extends JPanel implements ActionListener {
             deletePhoto.setFocusPainted(false);
             deletePhoto.setForeground(Color.WHITE);
             deletePhoto.setFont(menuText);
+            deletePhoto.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    entry.removePhoto("entry_photos/" + entry.getEntryID());
+                    if (parent instanceof explore) 
+                    {
+                        ((explore) parent).refreshEntries();
+                    } 
+                    else if (parent instanceof cityEntries) 
+                    {
+                        ((cityEntries) parent).refreshEntries();
+                    }
+                    else if(parent instanceof allJournals)
+                    {
+                        ((allJournals) parent).refreshEntries();
+                    }      
+                
+                }
+                
+            });
 
             // Edit text
-            editText = new JButton("Edit Text");
+            editText = new JButton("Edit Content");
             editText.setBackground(blueMenu);
             editText.setBorder(null);
             editText.setFocusPainted(false);
             editText.setForeground(Color.WHITE);
             editText.setFont(menuText);
+            editText.addActionListener(new ActionListener() {
 
-            // Delete text
-            deleteText = new JButton("Delete Text");
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    title.setEditable(true);
+                    entryArea.setEditable(true);
+                }
+                
+            });
+
+            // Save text
+            deleteText = new JButton("Save Content");
             deleteText.setBackground(blueMenu);
             deleteText.setBorder(null);
             deleteText.setFocusPainted(false);
             deleteText.setForeground(Color.WHITE);
             deleteText.setFont(menuText);
+            deleteText.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    title.setEditable(false);
+                    entryArea.setEditable(false);
+                    entry.updateEntry(title.getText(), entryArea.getText(), entry.isPublicEntry());
+                }
+                
+            });
 
             // Delete Entry
             deleteEntry = new JButton("Delete Entry");
@@ -210,9 +288,43 @@ public class genericJournalPanels extends JPanel implements ActionListener {
             deleteEntry.setFocusPainted(false);
             deleteEntry.setForeground(Color.WHITE);
             deleteEntry.setFont(menuText);
+            deleteEntry.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    JournalEntry.deleteEntry(entry.getEntryID());
+                    try {
+                        Thread.sleep(350); //not final
+                    } catch (InterruptedException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
+
+                    if (parent instanceof explore) 
+                    {
+                        ((explore) parent).refreshEntries();
+                    } 
+                    else if (parent instanceof cityEntries) 
+                    {
+                        ((cityEntries) parent).refreshEntries();
+                    }
+                    else if(parent instanceof allJournals)
+                    {
+                        ((allJournals) parent).refreshEntries();
+                    }      
+                    else if(parent instanceof favorites)
+                    {
+                        ((favorites) parent).refreshEntries();
+                    }
+                    else if(parent instanceof favorites)
+                    {
+                        ((favorites) parent).refreshEntries();
+                    }  
+                }
+                
+            });
 
             if (user.getUserID().equals(visitor.getUserID())) {
-                menu.removeAll();
                 menu.setLayout(new GridLayout(6,1));
                 menu.setBounds(70,4,200,250);
                 menu.add(addFav);
@@ -222,7 +334,6 @@ public class genericJournalPanels extends JPanel implements ActionListener {
                 menu.add(deleteText);
                 menu.add(deleteEntry);
             } else {
-                menu.removeAll();
                 menu.setLayout(new GridLayout(1,1));
                 menu.setBounds(70,4,200,50);
                 menu.add(addFav);
@@ -236,10 +347,27 @@ public class genericJournalPanels extends JPanel implements ActionListener {
 
     }
 
+    public void toggleFollow(ActionEvent e, JournalEntry entry) {
+        isFaved = !isFaved;
+        if (isFaved) {
+            user.addToSaved(entry.getEntryID());
+            JOptionPane.showMessageDialog(null, "Successfully added to favorites!", null, JOptionPane.INFORMATION_MESSAGE);
+            addFav.setText("");
+            addFav.setText("Remove from Favorites");
+        } else {
+            user.removeFromSaved(entry.getEntryID());
+            JOptionPane.showMessageDialog(null, "Successfully removed from favorites", null, JOptionPane.INFORMATION_MESSAGE);
+            addFav.setText("");
+            addFav.setText("Add to Favorites");
+        }
+        this.repaint();
+    }
+   
     @Override
     public void actionPerformed(ActionEvent e) {
         throw new UnsupportedOperationException("Unimplemented method 'actionPerformed'");
     }
+
 
     //DO NOT DELETE THIS ANYMORE!!!!!!!!!
     public void manageFavs() {
@@ -268,6 +396,6 @@ public class genericJournalPanels extends JPanel implements ActionListener {
     public JLabel getCityNameLabel() { return cityName; }
     public JLabel getDateLabel() { return date; }
     public JLabel getUsernameLabel() { return username; }
-    public JLabel getTitleLabel() { return title; }
-    public JTextArea getEntryArea() { return entryArea; }
+    public JTextArea getTitleLabel() { return title; }
+    public JTextArea getEntryArea() { return entryArea;}
 }

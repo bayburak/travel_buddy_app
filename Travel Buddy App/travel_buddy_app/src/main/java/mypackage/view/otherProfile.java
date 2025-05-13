@@ -139,14 +139,14 @@ public class otherProfile extends JPanel {
         informationPanel.add(Box.createVerticalStrut(10));
     
         // Followers and following
-        followersFollowing = new JLabel(owner.getFollowersObjectArray().size()+" Followers   "+ owner.getFollowingsObjextArray().size()+ " Following");
+        followersFollowing = new JLabel(owner.FollowersObjectArray().size()+" Followers   "+ owner.FollowingsObjextArray().size()+ " Following");
         followersFollowing.setForeground(Color.GRAY);
         followersFollowing.setAlignmentX(Component.CENTER_ALIGNMENT); 
         informationPanel.add(followersFollowing);
         informationPanel.add(Box.createVerticalStrut(20));
     
         // Edit Profile Button
-        ArrayList<User> following = (ArrayList<User>) visitor.getFollowingsObjextArray();
+        ArrayList<User> following = (ArrayList<User>) visitor.FollowingsObjextArray();
         editProfile = new RoundedButton("", 15);
         editProfile.setBounds(90,50,100,50);
 
@@ -160,7 +160,7 @@ public class otherProfile extends JPanel {
             editProfile.setText("Follow");
             editProfile.setBackground(darkBlue); // back to blue
         }
-        followersFollowing.setText(owner.getFollowersObjectArray().size()+" Followers   "+ owner.getFollowingsObjextArray().size()+ " Following");
+        followersFollowing.setText(owner.FollowersObjectArray().size()+" Followers   "+ owner.FollowingsObjextArray().size()+ " Following");
         this.repaint();
 
         editProfile.addActionListener(e -> {
@@ -284,7 +284,7 @@ public class otherProfile extends JPanel {
             editProfile.setText("Follow");
             editProfile.setBackground(darkBlue);
         }
-        followersFollowing.setText(owner.getFollowersObjectArray().size()+" Followers   "+ owner.getFollowingsObjextArray().size()+ " Following");
+        followersFollowing.setText(owner.FollowersObjectArray().size()+" Followers   "+ owner.FollowingsObjextArray().size()+ " Following");
         this.repaint();
     }
     //DO NOT DELETE 
