@@ -19,12 +19,13 @@ public class genericJournalPanels extends JPanel implements ActionListener{
     static Font menuText = new Font("Arial",Font.BOLD,19);
     int panelsWidth;
     int panelsHeight;
-    static User user;
+    User user;
 
     User visitor;
 
     JournalEntry entry;
     static boolean isFaved;
+    JButton addFav;
     JButton editPhoto;
     JButton deletePhoto;
     JButton editText;
@@ -114,17 +115,24 @@ public class genericJournalPanels extends JPanel implements ActionListener{
 
 
                 //Add to favorites
-                JButton addFav = new JButton("Add/Remove Favorites");
+                addFav = new JButton();
                 addFav.setBackground(blueMenu);
                 addFav.setBorder(null);
                 addFav.setFocusPainted(false);
                 addFav.setForeground(Color.WHITE);
                 addFav.setFont(new Font("Arial",Font.BOLD,15));
+                if (isFaved) {
+                    addFav.setText("");
+                    addFav.setText("Remove from Favorites");
+                } else {
+                    addFav.setText("");
+                    addFav.setText("Add to Favorites");
+                }
                 addFav.addActionListener(new ActionListener() {
 
                     @Override
                     public void actionPerformed(ActionEvent arg0) {
-                        genericJournalPanels.toggleFollow(e,entry);
+                        toggleFollow(e,entry);
                     }
                     
 
@@ -174,8 +182,7 @@ public class genericJournalPanels extends JPanel implements ActionListener{
                 deleteEntry.setFocusPainted(false);
                 deleteEntry.setForeground(Color.WHITE);
                 deleteEntry.setFont(menuText);
-                menu.add(deleteEntry);
-
+                
                 if (user.getUserID().equals(visitor.getUserID())) {
                     menu.setLayout(new GridLayout(6,1));
                     menu.setBounds(70,4,200,250);
@@ -202,15 +209,20 @@ public class genericJournalPanels extends JPanel implements ActionListener{
 
     }
 
-    protected static void toggleFollow(ActionEvent e, JournalEntry entry) {
+    public void toggleFollow(ActionEvent e, JournalEntry entry) {
         isFaved = !isFaved;
         if (isFaved) {
             user.addToSaved(entry.getEntryID());
             JOptionPane.showMessageDialog(null, "Successfully added to favorites!", null, JOptionPane.INFORMATION_MESSAGE);
+            addFav.setText("");
+            addFav.setText("Remove from Favorites");
         } else {
             user.removeFromSaved(entry.getEntryID());
             JOptionPane.showMessageDialog(null, "Successfully removed from favorites", null, JOptionPane.INFORMATION_MESSAGE);
+            addFav.setText("");
+            addFav.setText("Add to Favorites");
         }
+        this.repaint();
     }
 
     @Override
