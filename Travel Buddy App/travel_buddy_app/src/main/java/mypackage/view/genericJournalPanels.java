@@ -191,8 +191,22 @@ public class genericJournalPanels extends JPanel implements ActionListener {
                     new PhotoUploader(fileURL ->{
                         try {
                             entry.setPhoto(fileURL);
+                        if (parent instanceof explore) 
+                        {
                             ((explore) parent).refreshEntries();
-                          
+                        } 
+                        else if (parent instanceof cityEntries) 
+                        {
+                            ((cityEntries) parent).refreshEntries();
+                        }  
+                        else if(parent instanceof allJournals)
+                        {
+                            ((allJournals) parent).refreshEntries();
+                        }
+                        else if(parent instanceof favorites)
+                        {
+                            ((favorites) parent).refreshEntries();
+                        }                      
                         } catch (IOException e1) {
                             e1.printStackTrace();
                         }
@@ -212,8 +226,18 @@ public class genericJournalPanels extends JPanel implements ActionListener {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     entry.removePhoto("entry_photos/" + entry.getEntryID());
-                    ((explore) parent).refreshEntries();
-
+                    if (parent instanceof explore) 
+                    {
+                        ((explore) parent).refreshEntries();
+                    } 
+                    else if (parent instanceof cityEntries) 
+                    {
+                        ((cityEntries) parent).refreshEntries();
+                    }
+                    else if(parent instanceof allJournals)
+                    {
+                        ((allJournals) parent).refreshEntries();
+                    }      
                 
                 }
                 
@@ -266,7 +290,33 @@ public class genericJournalPanels extends JPanel implements ActionListener {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     JournalEntry.deleteEntry(entry.getEntryID());
-                    ((explore) parent).refreshEntries();
+                    try {
+                        Thread.sleep(350); //not final
+                    } catch (InterruptedException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
+
+                    if (parent instanceof explore) 
+                    {
+                        ((explore) parent).refreshEntries();
+                    } 
+                    else if (parent instanceof cityEntries) 
+                    {
+                        ((cityEntries) parent).refreshEntries();
+                    }
+                    else if(parent instanceof allJournals)
+                    {
+                        ((allJournals) parent).refreshEntries();
+                    }      
+                    else if(parent instanceof favorites)
+                    {
+                        ((favorites) parent).refreshEntries();
+                    }
+                    else if(parent instanceof favorites)
+                    {
+                        ((favorites) parent).refreshEntries();
+                    }  
                 }
                 
             });

@@ -20,11 +20,13 @@ public class allJournals extends JPanel implements ActionListener{
     boolean showPublic;
     List<JournalEntry> entries;
     JButton backButton;
+    JPanel contentPanel;
+    User user;
 
     public allJournals(User user, boolean showPublic) throws InterruptedException, ExecutionException {
 
         this.showPublic = showPublic;
-
+        this.user = user;
         this.setSize(screenSize);
         this.setLayout(new BorderLayout());
 
@@ -63,7 +65,8 @@ public class allJournals extends JPanel implements ActionListener{
         this.add(topBlue, BorderLayout.NORTH); 
     
         
-        JPanel contentPanel = new JPanel();
+        contentPanel = new JPanel();
+        
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.setBackground(Color.WHITE);
     
@@ -86,7 +89,32 @@ public class allJournals extends JPanel implements ActionListener{
         this.add(scrollPane, BorderLayout.CENTER); 
     }
 
+    public void refreshEntries() 
+    {
+        try {
+            if (showPublic) {
+                entries = user.getPublicEntries();
+            } else {
+                entries = user.getUserEntries();
+            }
 
+            contentPanel.removeAll();
+
+            int panelHeight = entries.size() * 300;
+            contentPanel.setPreferredSize(new Dimension(screenWidth, panelHeight));
+
+            for (JournalEntry entry : entries) {
+                contentPanel.add(new genericJournalPanels(entry, user, this));
+                contentPanel.add(Box.createVerticalStrut(20));
+            }
+
+            contentPanel.revalidate();
+            contentPanel.repaint();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Failed to refresh entries.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
     
     public JButton getBackButton() {
         return backButton;

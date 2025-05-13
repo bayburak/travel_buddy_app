@@ -21,16 +21,18 @@ public class cityEntries extends JPanel implements ActionListener {
     int screenHeight = screenSize.height;
     List<JournalEntry> entriesAll;
     List<JournalEntry> entries;
-
+    User user;
+    City city;
     JButton backButton;
     JLabel returnProfile;
     JPanel contentPanel;
     JScrollPane scrollPane;
 
     public cityEntries(User user, City city) throws InterruptedException, ExecutionException {
-
+        this.user = user;
         this.setSize(screenSize);
         this.setLayout(new BorderLayout());
+        this.city = city;
 
         // Initialize entries
         entriesAll = JournalEntry.getEntriesByCityID(city.getCityID());
@@ -97,8 +99,46 @@ public class cityEntries extends JPanel implements ActionListener {
         throw new UnsupportedOperationException("Unimplemented method 'actionPerformed'");
     }
 
-    //       Getters Added
+    public void refreshEntries() 
+    {
+        try {
+            entriesAll = JournalEntry.getEntriesByCityID(city.getCityID());
+            
+            entries.clear();
+            for (JournalEntry entry : entriesAll) {
+                if (entry.isPublicEntry()) {
+                    entries.add(entry);
+                }
+            }
 
+            contentPanel.removeAll();
+
+            int panelHeight = entries.size() * 300;
+            contentPanel.setPreferredSize(new Dimension(screenWidth, panelHeight));
+
+            for (JournalEntry entry : entries) {
+                contentPanel.add(new genericJournalPanels(entry, user, this));
+                contentPanel.add(Box.createVerticalStrut(20));
+            }
+
+            contentPanel.revalidate();
+            contentPanel.repaint();
+            scrollPane.revalidate();
+            scrollPane.repaint();
+
+            SwingUtilities.invokeLater(() -> scrollPane.getVerticalScrollBar().setValue(0));
+
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Failed to refresh city entries.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+        
+
+    public City getCity() 
+    {
+        return city;
+    }
     public JButton getBackButton() 
     {
         return backButton;

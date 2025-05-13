@@ -19,9 +19,12 @@ public class favorites extends JPanel implements ActionListener{
     int screenHeight = screenSize.height;
     List<JournalEntry> favorites;
     JButton backButton;
+    User user;
+    JPanel contentPanel;
 
     public favorites(User user) throws InterruptedException, ExecutionException {
 
+        this.user =user;
         this.setSize(screenSize);
         this.setLayout(new BorderLayout());
     
@@ -58,7 +61,7 @@ public class favorites extends JPanel implements ActionListener{
         this.add(topBlue, BorderLayout.NORTH); 
     
         
-        JPanel contentPanel = new JPanel();
+        contentPanel = new JPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.setBackground(Color.WHITE);
     
@@ -81,6 +84,28 @@ public class favorites extends JPanel implements ActionListener{
         this.add(scrollPane, BorderLayout.CENTER);
 
     }
+    public void refreshEntries() 
+    {
+    try {
+        favorites = user.getSavedEntries();
+        contentPanel.removeAll();
+
+        int panelHeight = favorites.size() * 300;
+        contentPanel.setPreferredSize(new Dimension(screenWidth, panelHeight));
+
+        for (JournalEntry entry : favorites) {
+            contentPanel.add(new genericJournalPanels(entry, user, this));
+            contentPanel.add(Box.createVerticalStrut(20));
+        }
+
+        contentPanel.revalidate();
+        contentPanel.repaint();
+    } catch (InterruptedException | ExecutionException e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Failed to refresh entries.", "Error", JOptionPane.ERROR_MESSAGE);
+    }
+    }
+
 
     public JButton getBackButton() {
         return backButton;
