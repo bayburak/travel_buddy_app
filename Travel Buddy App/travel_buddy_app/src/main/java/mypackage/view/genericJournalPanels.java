@@ -20,6 +20,9 @@ public class genericJournalPanels extends JPanel implements ActionListener{
     int panelsWidth;
     int panelsHeight;
     static User user;
+
+    User visitor;
+
     JournalEntry entry;
     static boolean isFaved;
     JButton editPhoto;
@@ -28,8 +31,11 @@ public class genericJournalPanels extends JPanel implements ActionListener{
     JButton deleteText;
     JButton deleteEntry;
 
-    public genericJournalPanels(JournalEntry entry) throws InterruptedException, ExecutionException {
+
+    public genericJournalPanels(JournalEntry entry,User visitor) throws InterruptedException, ExecutionException {
         this.entry = entry;
+        this.visitor = visitor;
+
         
         this.panelsWidth = 350;
         this.panelsHeight = 100;
@@ -39,7 +45,9 @@ public class genericJournalPanels extends JPanel implements ActionListener{
             isFaved = true;
         }
         else {
-        isFaved = false;
+
+            isFaved = false;
+
         }
 
         JPanel menu = new JPanel();
@@ -103,7 +111,7 @@ public class genericJournalPanels extends JPanel implements ActionListener{
                 if (menu.isVisible()) {
                     menu.removeAll();
                 }
-                menu.setLayout(new GridLayout(6,1));
+
 
                 //Add to favorites
                 JButton addFav = new JButton("Add/Remove Favorites");
@@ -119,8 +127,9 @@ public class genericJournalPanels extends JPanel implements ActionListener{
                         genericJournalPanels.toggleFollow(e,entry);
                     }
                     
-                });     
-                menu.add(addFav);
+
+                });
+
 
                 //Edit photo
                 editPhoto = new JButton("Edit Photo");
@@ -129,7 +138,7 @@ public class genericJournalPanels extends JPanel implements ActionListener{
                 editPhoto.setFocusPainted(false);
                 editPhoto.setForeground(Color.WHITE);
                 editPhoto.setFont(menuText);
-                menu.add(editPhoto);
+
 
                 //Delete photo
                 deletePhoto = new JButton("Delete Photo");
@@ -138,7 +147,7 @@ public class genericJournalPanels extends JPanel implements ActionListener{
                 deletePhoto.setFocusPainted(false);
                 deletePhoto.setForeground(Color.WHITE);
                 deletePhoto.setFont(menuText);
-                menu.add(deletePhoto);
+
 
                 //Edit text
                 editText = new JButton("Edit Text");
@@ -147,7 +156,7 @@ public class genericJournalPanels extends JPanel implements ActionListener{
                 editText.setFocusPainted(false);
                 editText.setForeground(Color.WHITE);
                 editText.setFont(menuText);
-                menu.add(editText);
+
 
                 //Delete text
                 deleteText = new JButton("Delete Text");
@@ -156,7 +165,7 @@ public class genericJournalPanels extends JPanel implements ActionListener{
                 deleteText.setFocusPainted(false);
                 deleteText.setForeground(Color.WHITE);
                 deleteText.setFont(menuText);
-                menu.add(deleteText);
+
 
                 //Delete Entry
                 deleteEntry = new JButton("Delete Entry");
@@ -166,7 +175,23 @@ public class genericJournalPanels extends JPanel implements ActionListener{
                 deleteEntry.setForeground(Color.WHITE);
                 deleteEntry.setFont(menuText);
                 menu.add(deleteEntry);
-                menu.setBounds(70,4,200,250);
+
+                if (user.getUserID().equals(visitor.getUserID())) {
+                    menu.setLayout(new GridLayout(6,1));
+                    menu.setBounds(70,4,200,250);
+                    menu.add(addFav);
+                    menu.add(editPhoto);
+                    menu.add(deletePhoto);
+                    menu.add(editText);
+                    menu.add(deleteText);
+                    menu.add(deleteEntry);
+                }
+                
+                else {
+                    menu.setLayout(new GridLayout(1,1));
+                    menu.setBounds(70,4,200,50);
+                    menu.add(addFav);
+                }
             }
         });
         dots.setBounds(20,0,40,40);
@@ -197,4 +222,6 @@ public class genericJournalPanels extends JPanel implements ActionListener{
     public JButton getDeletePhotoBtn() {return deletePhoto;}
     public JButton getEditTextBtn() {return editText;}
     public JButton getDeleteEntryBtn() {return deleteEntry;}
+
+    
 }

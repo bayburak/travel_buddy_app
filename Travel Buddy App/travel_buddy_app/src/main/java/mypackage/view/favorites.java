@@ -67,7 +67,7 @@ public class favorites extends JPanel implements ActionListener{
         contentPanel.setPreferredSize(new Dimension(screenWidth, panelHeight));
     
         for (JournalEntry entry : favorites) {
-            contentPanel.add(new genericJournalPanels(entry));
+            contentPanel.add(new genericJournalPanels(entry,user));
             contentPanel.add(Box.createVerticalStrut(20));
         }
     

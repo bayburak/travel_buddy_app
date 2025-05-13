@@ -3,6 +3,7 @@ package mypackage.view;
 import javax.swing.*;
 
 import mypackage.model.JournalEntry;
+import mypackage.model.User;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -17,15 +18,18 @@ public class explore extends JPanel implements ActionListener {
     int screenWidth = screenSize.width;
     int screenHeight = screenSize.height;
     List<JournalEntry> entries;
+    User user;
 
     // ← field to hold the back button
     private JButton backButton;
 
-    public explore() throws InterruptedException, ExecutionException {
+    public explore(User user) throws InterruptedException, ExecutionException {
 
         this.setSize(screenSize);
         this.setLayout(new BorderLayout());
 
+        this.user = user;
+        
         try {
             entries = JournalEntry.getTopEntries();
         } catch (InterruptedException | ExecutionException e) {
@@ -68,7 +72,7 @@ public class explore extends JPanel implements ActionListener {
         contentPanel.setPreferredSize(new Dimension(screenWidth, panelHeight));
 
         for (JournalEntry entry : entries) {
-            contentPanel.add(new genericJournalPanels(entry));
+            contentPanel.add(new genericJournalPanels(entry,user));
             contentPanel.add(Box.createVerticalStrut(20));
         }
 
