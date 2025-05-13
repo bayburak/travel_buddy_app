@@ -39,11 +39,12 @@ public class findTravelbuddy extends JPanel implements ActionListener {
         topBlue.setBackground(blue);
         topBlue.setPreferredSize(new Dimension(screenWidth, 70));
 
-        // Back button 
+        // Back Button
         backButton = new JButton("←");
         backButton.setFont(new Font("Arial", Font.BOLD, 50));
         backButton.setForeground(Color.WHITE);
         backButton.setBackground(blue);
+        backButton.setContentAreaFilled(false);
         backButton.setBorder(BorderFactory.createEmptyBorder());
         backButton.setFocusPainted(false);
         backButton.setBounds(10, 0, 100, 60);
