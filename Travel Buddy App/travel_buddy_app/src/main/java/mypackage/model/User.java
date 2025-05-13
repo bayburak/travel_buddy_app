@@ -95,7 +95,7 @@ public class User {
 
     
     public void setDefaultPic(){
-        this.profilePicURL = "https://storage.googleapis.com/travelbuddyapp-35c7b.firebasestorage.app/profile_photos/default.jpeg"; 
+        this.profilePicURL = "https://firebasestorage.googleapis.com/v0/b/travelbuddyapp-35c7b.firebasestorage.app/o/profile_photos%2Fdefault.jpeg?alt=media&token=6a937830-968e-4f9a-9d1e-0ed330fbbe91"; 
     }
 
     public void followUser(String targetUserID) {
