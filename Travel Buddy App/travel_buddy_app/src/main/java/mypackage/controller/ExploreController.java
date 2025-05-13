@@ -13,7 +13,6 @@ public class ExploreController
     public void open(JFrame host) 
     {
         SwingUtilities.invokeLater(() -> {
-            host.setVisible(false);
 
             JFrame explore = new JFrame("Explorer");
             explore.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -47,6 +46,10 @@ public class ExploreController
             explore.toFront();
             explore.requestFocus();
             explore.setVisible(true);
+            host.setVisible(false);
+
+
+
         });
     }
 }

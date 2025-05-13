@@ -25,18 +25,21 @@ public class editProfileController
     public void open() {
         SwingUtilities.invokeLater(() -> {
 
-            profileFrame.setVisible(false);
 
             JFrame editFrame = new JFrame("Edit Profile");
             editFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             editFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
+
+
             editProfilePanel editPanel = new editProfilePanel(user);
 
             editPanel.getBackButton().addActionListener(e -> { //back button
-                editFrame.dispose();
                 profileFrame.repaint();
+                profileFrame.requestFocus();
                 profileFrame.setVisible(true);
+                editFrame.dispose();
+
             });
 
             editPanel.getSaveButton().addActionListener(e -> { //save button
@@ -52,6 +55,13 @@ public class editProfileController
                 host.toFront();
                 host.requestFocus();
                 host.setVisible(true);
+                try 
+                {
+                    Thread.sleep(10);
+                } catch (InterruptedException e1) 
+                {
+                    e1.printStackTrace();
+                }
                 profileFrame.dispose();
             });
 
@@ -90,10 +100,13 @@ public class editProfileController
                 }));
             });
 
-            editFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
             editFrame.setContentPane(editPanel);
             editFrame.setLocationRelativeTo(null);
+            editFrame.revalidate();
             editFrame.setVisible(true);
+            profileFrame.setVisible(false);
+
+
         });
     }
 

@@ -12,8 +12,6 @@ public class ProfileController {
     {
         SwingUtilities.invokeLater(() -> {
             this.host = host;
-            host.setVisible(false);
-
             JFrame profileFrame = new JFrame("Your Profile");
             profileFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             profileFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -27,7 +25,6 @@ public class ProfileController {
             });
 
             profilePanel.getEditProfileButton().addActionListener(e -> {
-                profileFrame.setVisible(false);
                 new editProfileController(profileFrame, currentUser, host).open();
             });
 
@@ -38,8 +35,8 @@ public class ProfileController {
             profileFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
             profileFrame.validate();
             profileFrame.toFront();
-            profileFrame.requestFocus();
             profileFrame.setVisible(true);
+            host.setVisible(false);
         });
     }
 
