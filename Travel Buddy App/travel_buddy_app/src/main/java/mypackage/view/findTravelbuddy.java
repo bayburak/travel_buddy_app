@@ -22,11 +22,16 @@ public class findTravelbuddy extends JPanel implements ActionListener {
 
     private JTextField searchField;
     private List<User> users;
+    User clickedUser;
+    JButton visitButton;
 
     // ← declare the back button here
     private JButton backButton;
 
     public findTravelbuddy() {
+
+        this.visitButton = null;
+        this.clickedUser = null;
 
         this.setSize(screenSize);
         this.setLayout(new BorderLayout());
@@ -122,5 +127,21 @@ public class findTravelbuddy extends JPanel implements ActionListener {
     /** Expose the back button so callers can attach their own listener */
     public JButton getBackButton() {
         return backButton;
+    }
+
+    public User getClickedUser() {
+        return clickedUser;
+    }
+
+    public void setClickedUser(User clickedUser) {
+        this.clickedUser = clickedUser;
+    }
+
+    public JButton getVisitButton() {
+        return visitButton;
+    }
+
+    public void setVisitButton(JButton visitButton) {
+        this.visitButton = visitButton;
     }
 }

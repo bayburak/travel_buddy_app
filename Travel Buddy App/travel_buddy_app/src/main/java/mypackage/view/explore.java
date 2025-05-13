@@ -20,7 +20,7 @@ public class explore extends JPanel implements ActionListener {
     List<JournalEntry> entries;
     User user;
 
-    // UI Components
+    // ← field to hold the back button
     private JButton backButton;
     private JPanel contentPanel;
     private JScrollPane scrollPane;
@@ -31,7 +31,7 @@ public class explore extends JPanel implements ActionListener {
         this.setLayout(new BorderLayout());
 
         this.user = user;
-
+        
         try {
             entries = JournalEntry.getTopEntries();
         } catch (InterruptedException | ExecutionException e) {
@@ -63,9 +63,6 @@ public class explore extends JPanel implements ActionListener {
 
         this.add(topBlue, BorderLayout.NORTH);
 
-        // ======================
-        // Content Panel
-        // ======================
         contentPanel = new JPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.setBackground(Color.WHITE);
@@ -74,11 +71,10 @@ public class explore extends JPanel implements ActionListener {
         contentPanel.setPreferredSize(new Dimension(screenWidth, panelHeight));
 
         for (JournalEntry entry : entries) {
-            contentPanel.add(new genericJournalPanels(entry, user,this));
+            contentPanel.add(new genericJournalPanels(entry,user,this));
             contentPanel.add(Box.createVerticalStrut(20));
         }
 
-        // Scroll Pane Setup
         scrollPane = new JScrollPane(contentPanel);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -93,12 +89,6 @@ public class explore extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         throw new UnsupportedOperationException("Unimplemented method 'actionPerformed'");
     }
-
-    /** Expose the back‐button so external code can attach a listener */
-    public JButton getBackButton() {
-        return backButton;
-    }
-
 
     public void refreshEntries() 
     {
@@ -127,5 +117,10 @@ public class explore extends JPanel implements ActionListener {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Failed to refresh entries.", "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    /** Expose the back‐button so external code can attach a listener */
+    public JButton getBackButton() {
+        return backButton;
     }
 }

@@ -66,7 +66,6 @@ public class allJournals extends JPanel implements ActionListener{
     
         
         contentPanel = new JPanel();
-        
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.setBackground(Color.WHITE);
     
@@ -74,7 +73,7 @@ public class allJournals extends JPanel implements ActionListener{
         contentPanel.setPreferredSize(new Dimension(screenWidth, panelHeight));
     
         for (JournalEntry entry : entries) {
-            contentPanel.add(new genericJournalPanels(entry,user,this));
+            contentPanel.add(new genericJournalPanels(entry,user, this));
             contentPanel.add(Box.createVerticalStrut(20));
         }
     
@@ -87,6 +86,17 @@ public class allJournals extends JPanel implements ActionListener{
         SwingUtilities.invokeLater(() -> scrollPane.getVerticalScrollBar().setValue(0));
     
         this.add(scrollPane, BorderLayout.CENTER); 
+    }
+
+
+    
+
+    public JButton getBackButton() {
+        return backButton;
+    }
+
+    public JPanel getContentPanel() {
+        return contentPanel;
     }
 
     public void refreshEntries() 
@@ -114,10 +124,6 @@ public class allJournals extends JPanel implements ActionListener{
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Failed to refresh entries.", "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }
-    
-    public JButton getBackButton() {
-        return backButton;
     }
 
     @Override

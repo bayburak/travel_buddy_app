@@ -2,6 +2,8 @@ package mypackage.view;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+
+import mypackage.controller.Session;
 import mypackage.model.User;
 
 import java.awt.*;
@@ -11,9 +13,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class profile extends JPanel {
-    private final User user;
     private final Color darkBlue = new Color(34, 86, 153);
     private final Color bioColor  = new Color(221, 224, 247);
 
@@ -22,11 +25,15 @@ public class profile extends JPanel {
     private JButton editProfileButton;
     private JButton journalEntriesButton;
     private JButton favouritesButton;
+    JLabel followersFollowing;
 
     // Profile picture label (for internal updates)
     private JLabel profilePictureLabel;
+    boolean doesFollow;
+    User user;
+    protected Object getBackButton;
 
-    public profile(User user) {
+    public profile(User user) throws InterruptedException, ExecutionException {
         this.user = user;
         setLayout(new BorderLayout(0, 30));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -68,7 +75,7 @@ public class profile extends JPanel {
         return panel;
     }
 
-    private JPanel createProfileSection() {
+    private JPanel createProfileSection() throws InterruptedException, ExecutionException {
         JPanel info = new JPanel();
         info.setLayout(new BoxLayout(info, BoxLayout.Y_AXIS));
         info.setBackground(Color.WHITE);
@@ -103,32 +110,65 @@ public class profile extends JPanel {
 
         // Name / username / followers
         JLabel nameLabel = new JLabel(user.getNameSurname());
+        nameLabel.setFont(new Font("Arial",Font.BOLD,24));
         nameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         info.add(nameLabel);
         info.add(Box.createVerticalStrut(10));
 
         JLabel usernameLabel = new JLabel(user.getUsername());
         usernameLabel.setForeground(Color.GRAY);
+        usernameLabel.setFont(new Font("Arial",Font.PLAIN,20));
         usernameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         info.add(usernameLabel);
         info.add(Box.createVerticalStrut(10));
 
-        JLabel statsLabel = new JLabel(
-            user.getFollowers().size() + " Followers   " +
-            user.getFollowing().size() + " Following"
-        );
-        statsLabel.setForeground(Color.GRAY);
-        statsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        info.add(statsLabel);
+        followersFollowing = new JLabel(user.FollowersObjectArray().size()+" Followers   "+ user.FollowingsObjextArray().size()+ " Following");
+        followersFollowing.setForeground(Color.GRAY);
+        followersFollowing.setAlignmentX(Component.CENTER_ALIGNMENT); 
+        info.add(followersFollowing);
         info.add(Box.createVerticalStrut(20));
 
-        // Edit Profile button
-        editProfileButton = new RoundedButton("Edit Profile", 15);
-        editProfileButton.setFont(new Font("Arial", Font.BOLD, 14));
-        editProfileButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        editProfileButton.setBackground(darkBlue);
-        editProfileButton.setForeground(Color.WHITE);
-        info.add(editProfileButton);
+        if (Session.getCurrentUser().getUserID().equals(user.getUserID())) {
+            // Edit Profile button
+            editProfileButton = null;
+            editProfileButton = new RoundedButton("Edit Profile", 15);
+            editProfileButton.setFont(new Font("Arial", Font.BOLD, 14));
+            editProfileButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+            editProfileButton.setBackground(darkBlue);
+            editProfileButton.setForeground(Color.WHITE);
+            info.add(editProfileButton);
+        }
+
+        else {
+            editProfileButton = null;
+            ArrayList<User> following = (ArrayList<User>) user.FollowingsObjextArray();
+            editProfileButton = new RoundedButton("", 15);
+            editProfileButton.setBounds(90,50,100,50);
+
+            doesFollow = following.contains(user);
+
+            //DO NOT DELETE
+            if (doesFollow) {
+                editProfileButton.setText("Following");
+                editProfileButton.setBackground(Color.LIGHT_GRAY);
+            } else {
+                editProfileButton.setText("Follow");
+                editProfileButton.setBackground(darkBlue); // back to blue
+            }
+            followersFollowing.setText(user.FollowersObjectArray().size()+" Followers   "+ user.FollowingsObjextArray().size()+ " Following");
+            this.repaint();
+
+            editProfileButton.addActionListener(e -> {
+                try {
+                    manageFollow(e);
+                } catch (InterruptedException | ExecutionException a) {
+                    a.printStackTrace();
+                }
+            });        
+            //DO NOT DELETE
+
+            info.add(editProfileButton);
+        }
 
         return info;
     }
@@ -148,6 +188,8 @@ public class profile extends JPanel {
         JLabel aboutLabel = new JLabel("About Me");
         aboutLabel.setFont(new Font(aboutLabel.getFont().getName(), Font.BOLD, 20));
         aboutLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
+        aboutLabel.setBounds(20, 20, 880, 180); //not done
+
 
         JPanel line = new JPanel();
         line.setBackground(new Color(200, 200, 200));
@@ -160,6 +202,7 @@ public class profile extends JPanel {
 
         // Bio text area
         JTextArea bioArea = new JTextArea(user.getAboutMe());
+        bioArea.setFont(new Font("Arial",Font.PLAIN,24));
         bioArea.setBackground(bioColor);
         bioArea.setEditable(false);
         bioArea.setLineWrap(true);
@@ -203,6 +246,23 @@ public class profile extends JPanel {
         return panel;
     }
 
+    //DO NOT DELETE
+    private void manageFollow(ActionEvent e) throws InterruptedException, ExecutionException {
+        doesFollow = !doesFollow;
+        if (doesFollow) {
+            Session.getCurrentUser().unfollowUser(user.getUserID());
+            editProfileButton.setText("Following");
+            editProfileButton.setBackground(Color.LIGHT_GRAY);
+        } else {
+            Session.getCurrentUser().followUser(user.getUserID());
+            editProfileButton.setText("Follow");
+            editProfileButton.setBackground(darkBlue);
+        }
+        followersFollowing.setText(user.FollowersObjectArray().size()+" Followers   "+ user.FollowingsObjextArray().size()+ " Following");
+        this.repaint();
+    }
+    //DO NOT DELETE 
+
     // Getters for all buttons
 
     /** Back (return) button in the top section */
@@ -223,5 +283,9 @@ public class profile extends JPanel {
     /** "Favourites" button in the menu section */
     public JButton getFavouritesButton() {
         return favouritesButton;
+    }
+
+    public User getUser() {
+        return user;
     }
 }
