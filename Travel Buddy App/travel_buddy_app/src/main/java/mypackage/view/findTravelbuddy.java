@@ -2,12 +2,14 @@ package mypackage.view;
 
 import javax.swing.*;
 
+import mypackage.controller.Session;
 import mypackage.model.User;
 import mypackage.service.UserDatabaseService;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -79,6 +81,7 @@ public class findTravelbuddy extends JPanel implements ActionListener {
             if (!query.isEmpty()) {
                 try {
                     users = UserDatabaseService.searchUsersByKeyword(query);
+                    users.remove( Session.getCurrentUser());
                 } catch (InterruptedException | ExecutionException e1) {
                     e1.printStackTrace();
                 }
