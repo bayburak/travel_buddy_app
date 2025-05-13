@@ -126,12 +126,14 @@ public class otherProfile extends JPanel {
         // Name and surname
         JLabel nameSurname = new JLabel(owner.getNameSurname());
         nameSurname.setAlignmentX(Component.CENTER_ALIGNMENT); 
+        nameSurname.setFont(new Font("Arial",Font.BOLD,24));
         informationPanel.add(nameSurname);
         informationPanel.add(Box.createVerticalStrut(10));
     
         // Username
         JLabel username = new JLabel(owner.getUsername());
         username.setForeground(Color.GRAY);
+        username.setFont(new Font("Arial",Font.PLAIN,20));
         username.setAlignmentX(Component.CENTER_ALIGNMENT); 
         informationPanel.add(username);
         informationPanel.add(Box.createVerticalStrut(10));
@@ -146,10 +148,11 @@ public class otherProfile extends JPanel {
         // Edit Profile Button
         ArrayList<User> following = (ArrayList<User>) visitor.getFollowingsObjextArray();
         editProfile = new RoundedButton("", 15);
+        editProfile.setBounds(90,50,100,50);
 
         doesFollow = following.contains(owner);
 
-
+        //DO NOT DELETE
         if (doesFollow) {
             editProfile.setText("Following");
             editProfile.setBackground(Color.LIGHT_GRAY);
@@ -162,13 +165,14 @@ public class otherProfile extends JPanel {
 
         editProfile.addActionListener(e -> {
             try {
-                toggleFollow(e);
+                manageFollow(e);
             } catch (InterruptedException | ExecutionException a) {
                 // TODO Auto-generated catch block
                 a.printStackTrace();
             }
         });        
-       
+        //DO NOT DELETE
+
         informationPanel.add(editProfile);
     
         return informationPanel;
@@ -191,7 +195,8 @@ public class otherProfile extends JPanel {
         JLabel aboutMeLabel = new JLabel("About Me");
         aboutMeLabel.setFont(new Font(aboutMeLabel.getFont().getName(), Font.BOLD, 20));
         aboutMeLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10)); 
-    
+        aboutMeLabel.setBounds(20, 20, 880, 180); //not done
+
         // A panel for line
         JPanel linePanel = new JPanel();
         linePanel.setPreferredSize(new Dimension(Short.MAX_VALUE , 2));
@@ -204,6 +209,7 @@ public class otherProfile extends JPanel {
 
         // about me text area
         JTextArea aboutMeTextArea = new JTextArea(owner.getAboutMe());
+        aboutMeTextArea.setFont(new Font("Arial",Font.PLAIN,24));
         aboutMeTextArea.setBackground(bioColor);
         aboutMeTextArea.setEditable(false); 
         aboutMeTextArea.setLineWrap(true); 
@@ -212,6 +218,7 @@ public class otherProfile extends JPanel {
             aboutMeTextArea.getBorder(),
             BorderFactory.createEmptyBorder(15, 15, 15, 15)
         ));
+        aboutMeTextArea.setText(owner.getAboutMe());
 
         // A scrollPane for bio 
         JScrollPane scrollPane = new JScrollPane(aboutMeTextArea);
@@ -265,7 +272,8 @@ public class otherProfile extends JPanel {
         return panel;
     }
 
-    private void toggleFollow(ActionEvent e) throws InterruptedException, ExecutionException {
+    //DO NOT DELETE
+    private void manageFollow(ActionEvent e) throws InterruptedException, ExecutionException {
         doesFollow = !doesFollow;
         if (doesFollow) {
             visitor.unfollowUser(owner.getUserID());
@@ -278,5 +286,11 @@ public class otherProfile extends JPanel {
         }
         followersFollowing.setText(owner.getFollowersObjectArray().size()+" Followers   "+ owner.getFollowingsObjextArray().size()+ " Following");
         this.repaint();
+    }
+    //DO NOT DELETE 
+
+    //Getters
+    public User getOtherUser() {
+        return owner;
     }
 }
