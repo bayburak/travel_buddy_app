@@ -191,4 +191,9 @@ public class User {
         return this.getNameSurname() + " "+this.getUsername() + " " + this.getUserID();
     }
 
+    @Override
+    public boolean equals( Object obj) {
+        User user = ((User) obj);
+        return (user.getUserID().equals(this.getUserID()));
+    }
 }
