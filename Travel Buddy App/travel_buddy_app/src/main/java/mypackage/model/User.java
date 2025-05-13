@@ -96,6 +96,7 @@ public class User {
     
     public void setDefaultPic(){
         this.profilePicURL = "https://firebasestorage.googleapis.com/v0/b/travelbuddyapp-35c7b.firebasestorage.app/o/profile_photos%2Fdefault.jpeg?alt=media&token=6a937830-968e-4f9a-9d1e-0ed330fbbe91"; 
+        this.updateUserProfile(nameSurname, aboutMe, username, e_mail); 
     }
 
     public void followUser(String targetUserID) {
@@ -191,9 +192,4 @@ public class User {
         return this.getNameSurname() + " "+this.getUsername() + " " + this.getUserID();
     }
 
-    @Override
-    public boolean equals( Object obj) {
-        User user = ((User) obj);
-        return (user.getUserID().equals(this.getUserID()));
-    }
 }
