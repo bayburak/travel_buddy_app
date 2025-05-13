@@ -83,6 +83,9 @@ public class favorites extends JPanel implements ActionListener{
 
     }
 
+    public JButton getBackButton() {
+        return backButton;
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
