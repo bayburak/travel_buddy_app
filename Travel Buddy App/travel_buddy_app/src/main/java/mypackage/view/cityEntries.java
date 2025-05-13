@@ -71,7 +71,7 @@ public class cityEntries extends JPanel implements ActionListener{
         contentPanel.setPreferredSize(new Dimension(screenWidth, panelHeight));
     
         for (JournalEntry entry : entries) {
-            contentPanel.add(new genericJournalPanels(entry));
+            contentPanel.add(new genericJournalPanels(entry,user));
             contentPanel.add(Box.createVerticalStrut(20));
         }
     
