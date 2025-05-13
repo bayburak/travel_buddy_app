@@ -5,7 +5,7 @@ import mypackage.model.City;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.util.function.Consumer;
+
 
 /**
  * A blue/grey styled journal-entry form with:
@@ -25,7 +25,6 @@ public class journalEntry extends JPanel {
     public final JButton    attachBtn  = new RoundedButton("Attach Photo", 20);
     public final JButton    submitBtn  = new RoundedButton("Submit",      20);
 
-    private String photoURL = "";
 
     /**
      * @param presetCity      if non-null, city is prefilled & locked
@@ -168,8 +167,4 @@ public class journalEntry extends JPanel {
     public String getBody()     { return bodyArea.getText().trim(); }
     /** Private checkbox */
     public boolean isPrivate()  { return privateBox.isSelected(); }
-    /** Photo URL set by uploader */
-    public String getPhotoURL() { return photoURL;              }
-    /** Called by PhotoUploader callback */
-    public void setPhotoURL(String url) { this.photoURL = url;    }
 }
