@@ -69,7 +69,7 @@ public class PhotoUploader extends JFrame {
         // Upload button
         uploadButton.setEnabled(false);
         uploadButton.setBackground(new Color(20, 79, 147));
-        uploadButton.setForeground(Color.WHITE);
+        uploadButton.setForeground(Color.BLACK);
         uploadButton.setFont(new Font("Arial", Font.BOLD, 16));
         uploadButton.setFocusPainted(false);
         uploadButton.addActionListener(e -> {
