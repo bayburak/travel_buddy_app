@@ -1,4 +1,3 @@
-
 package mypackage.view;
 
 import javax.imageio.ImageIO;
@@ -43,10 +42,10 @@ public class genericJournalPanels extends JPanel implements ActionListener {
     JLabel cityName;
     JLabel date;
     JLabel username;
-    JLabel title;
+    JTextArea title;
     JTextArea entryArea;
 
-    public genericJournalPanels(JournalEntry entry, User visitor) throws InterruptedException, ExecutionException {
+    public genericJournalPanels(JournalEntry entry, User visitor, JPanel parent) throws InterruptedException, ExecutionException {
         this.entry = entry;
         this.visitor = visitor;
 
@@ -71,7 +70,10 @@ public class genericJournalPanels extends JPanel implements ActionListener {
         cityName = new JLabel(City.getCitybyID(entry.getCityID()).getName());
         date = new JLabel(entry.getCreationDate());
         username = new JLabel(User.getUserByID(entry.getAuthorID()).getUsername());
-        title = new JLabel(entry.getTitle());
+        title = new JTextArea(entry.getTitle());
+        title.setBackground(blueBack);
+        title.setEditable(false);
+        
 
         cityName.setForeground(Color.BLACK); cityName.setFont(new Font("Arial",Font.PLAIN,12));
         date.setForeground(Color.BLACK); date.setFont(new Font("Arial",Font.PLAIN,12));
@@ -99,19 +101,24 @@ public class genericJournalPanels extends JPanel implements ActionListener {
 
                 if (image != null) {
                     System.out.println("Image successfully read!");
+                    JLabel photoLabel;
+                    photoLabel = new JLabel(new ImageIcon(image));
+                    photoLabel.setBackground(blueFront);
+                    photoLabel.setBounds(30,90,300,150);
+            this.add(photoLabel);
                 } else {
                     System.out.println("Failed to decode the image.");
                 }
             }
             } catch (IOException e) {
                 e.printStackTrace();
+                JPanel photopanel = new JPanel();
+                photopanel.setBackground(blueFront);
+                photopanel.setBounds(30,90,300,150);
+                this.add(photopanel);
             }        
 
-            JLabel photoLabel;
-            photoLabel = new JLabel(new ImageIcon(image));
-            photoLabel.setBackground(blueFront);
-            photoLabel.setBounds(30,90,300,150);
-            this.add(photoLabel);
+            
         }
         else{
             JPanel photopanel = new JPanel();
@@ -137,6 +144,7 @@ public class genericJournalPanels extends JPanel implements ActionListener {
         entryArea.setLineWrap(true);
         entryArea.setWrapStyleWord(true);
         entryPanel.add(entryArea);
+        entryArea.setEditable(false);
 
         // Menu Button
         RoundedButton dots = new RoundedButton("...", 10);
@@ -156,23 +164,17 @@ public class genericJournalPanels extends JPanel implements ActionListener {
             addFav.setFocusPainted(false);
             addFav.setForeground(Color.WHITE);
             addFav.setFont(new Font("Arial",Font.BOLD,15));
-            if (isFaved) 
-            {
-                addFav.setText("");
+            if (isFaved) {
                 addFav.setText("Remove from Favorites");
-            } 
-            else 
-            {
-                addFav.setText("");
+            } else {
                 addFav.setText("Add to Favorites");
             }
             addFav.addActionListener(new ActionListener() {
+
                 @Override
                 public void actionPerformed(ActionEvent arg0) {
                     toggleFollow(e,entry);
                 }
-                
-
             });
 
             // Edit photo
@@ -189,6 +191,7 @@ public class genericJournalPanels extends JPanel implements ActionListener {
                     new PhotoUploader(fileURL ->{
                         try {
                             entry.setPhoto(fileURL);
+                            ((explore) parent).refreshEntries();
                           
                         } catch (IOException e1) {
                             e1.printStackTrace();
@@ -209,26 +212,47 @@ public class genericJournalPanels extends JPanel implements ActionListener {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     entry.removePhoto("entry_photos/" + entry.getEntryID());
+                    ((explore) parent).refreshEntries();
+
                 
                 }
                 
             });
 
             // Edit text
-            editText = new JButton("Edit Text");
+            editText = new JButton("Edit Content");
             editText.setBackground(blueMenu);
             editText.setBorder(null);
             editText.setFocusPainted(false);
             editText.setForeground(Color.WHITE);
             editText.setFont(menuText);
+            editText.addActionListener(new ActionListener() {
 
-            // Delete text
-            deleteText = new JButton("Delete Text");
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    title.setEditable(true);
+                    entryArea.setEditable(true);
+                }
+                
+            });
+
+            // Save text
+            deleteText = new JButton("Save Content");
             deleteText.setBackground(blueMenu);
             deleteText.setBorder(null);
             deleteText.setFocusPainted(false);
             deleteText.setForeground(Color.WHITE);
             deleteText.setFont(menuText);
+            deleteText.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    title.setEditable(false);
+                    entryArea.setEditable(false);
+                    entry.updateEntry(title.getText(), entryArea.getText(), entry.isPublicEntry());
+                }
+                
+            });
 
             // Delete Entry
             deleteEntry = new JButton("Delete Entry");
@@ -242,6 +266,7 @@ public class genericJournalPanels extends JPanel implements ActionListener {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     JournalEntry.deleteEntry(entry.getEntryID());
+                    ((explore) parent).refreshEntries();
                 }
                 
             });
@@ -268,8 +293,8 @@ public class genericJournalPanels extends JPanel implements ActionListener {
         this.setComponentZOrder(menu, 0);
 
     }
-        public void toggleFollow(ActionEvent e, JournalEntry entry) 
-        {
+
+    public void toggleFollow(ActionEvent e, JournalEntry entry) {
         isFaved = !isFaved;
         if (isFaved) {
             user.addToSaved(entry.getEntryID());
@@ -283,8 +308,7 @@ public class genericJournalPanels extends JPanel implements ActionListener {
             addFav.setText("Add to Favorites");
         }
         this.repaint();
-        }
-
+    }
    
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -300,6 +324,6 @@ public class genericJournalPanels extends JPanel implements ActionListener {
     public JLabel getCityNameLabel() { return cityName; }
     public JLabel getDateLabel() { return date; }
     public JLabel getUsernameLabel() { return username; }
-    public JLabel getTitleLabel() { return title; }
-    public JTextArea getEntryArea() { return entryArea; }
+    public JTextArea getTitleLabel() { return title; }
+    public JTextArea getEntryArea() { return entryArea;}
 }

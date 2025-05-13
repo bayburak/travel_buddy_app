@@ -77,7 +77,7 @@ public class cityEntries extends JPanel implements ActionListener {
     
         // Adding generic journal panels
         for (JournalEntry entry : entries) {
-            contentPanel.add(new genericJournalPanels(entry, user));
+            contentPanel.add(new genericJournalPanels(entry, user,this));
             contentPanel.add(Box.createVerticalStrut(20));
         }
     

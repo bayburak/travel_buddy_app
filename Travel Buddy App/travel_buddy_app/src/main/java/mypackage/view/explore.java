@@ -20,8 +20,10 @@ public class explore extends JPanel implements ActionListener {
     List<JournalEntry> entries;
     User user;
 
-    // ← field to hold the back button
+    // UI Components
     private JButton backButton;
+    private JPanel contentPanel;
+    private JScrollPane scrollPane;
 
     public explore(User user) throws InterruptedException, ExecutionException {
 
@@ -29,7 +31,7 @@ public class explore extends JPanel implements ActionListener {
         this.setLayout(new BorderLayout());
 
         this.user = user;
-        
+
         try {
             entries = JournalEntry.getTopEntries();
         } catch (InterruptedException | ExecutionException e) {
@@ -61,7 +63,10 @@ public class explore extends JPanel implements ActionListener {
 
         this.add(topBlue, BorderLayout.NORTH);
 
-        JPanel contentPanel = new JPanel();
+        // ======================
+        // Content Panel
+        // ======================
+        contentPanel = new JPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.setBackground(Color.WHITE);
 
@@ -69,11 +74,12 @@ public class explore extends JPanel implements ActionListener {
         contentPanel.setPreferredSize(new Dimension(screenWidth, panelHeight));
 
         for (JournalEntry entry : entries) {
-            contentPanel.add(new genericJournalPanels(entry,user));
+            contentPanel.add(new genericJournalPanels(entry, user,this));
             contentPanel.add(Box.createVerticalStrut(20));
         }
 
-        JScrollPane scrollPane = new JScrollPane(contentPanel);
+        // Scroll Pane Setup
+        scrollPane = new JScrollPane(contentPanel);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setBorder(null);
@@ -91,5 +97,35 @@ public class explore extends JPanel implements ActionListener {
     /** Expose the back‐button so external code can attach a listener */
     public JButton getBackButton() {
         return backButton;
+    }
+
+
+    public void refreshEntries() 
+    {
+        try {
+            entries = JournalEntry.getTopEntries();
+            
+            contentPanel.removeAll();
+
+            int panelHeight = entries.size() * 300;
+            contentPanel.setPreferredSize(new Dimension(screenWidth, panelHeight));
+
+            for (JournalEntry entry : entries) 
+            {
+                contentPanel.add(new genericJournalPanels(entry, user, this));
+                contentPanel.add(Box.createVerticalStrut(20));
+            }
+
+            contentPanel.revalidate();
+            contentPanel.repaint();
+            scrollPane.revalidate();
+            scrollPane.repaint();
+
+            SwingUtilities.invokeLater(() -> scrollPane.getVerticalScrollBar().setValue(0));
+
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Failed to refresh entries.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }
