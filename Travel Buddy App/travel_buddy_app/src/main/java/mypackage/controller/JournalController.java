@@ -36,9 +36,14 @@ public final class JournalController
 
         // 2) Wire attach-photo 
         entryForm.attachBtn.addActionListener(e -> {
-            new PhotoUploader(url -> {
-                if (url != null) {
-                    entryForm.setPhotoURL(url);
+            new PhotoUploader(filePath -> {
+                if (filePath != null) {
+                    try {
+                        tempEntry.setPhoto(filePath);
+                    } catch (IOException e1) {
+                        
+                        e1.printStackTrace();
+                    }
                 } else {
                     System.out.println("Photo upload returned a null URL.");
                 }
@@ -64,10 +69,8 @@ public final class JournalController
 
     private static boolean validate(JFrame parent, journalEntry form, JournalEntry tempEntry) {
         String title = form.getTitle();
-        String cityName = form.getCityName();
         String body = form.getBody();
-        boolean isPrivate = form.isPrivate();
-        String photoURL = form.getPhotoURL();
+        boolean isPrivate = !form.isPrivate();
 
         if (title.isEmpty())
         {
@@ -82,14 +85,6 @@ public final class JournalController
 
         tempEntry.updateEntry(title, body, isPrivate);
 
-        try 
-        {
-            tempEntry.setPhoto(photoURL);
-        } 
-        catch (IOException e) 
-        {
-            System.out.println("Photo could not be set: " + e.getMessage());
-        }
 
         popMessage(parent, "Your entry has been saved!");
         return true;
