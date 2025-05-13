@@ -28,6 +28,8 @@ public class PhotoUploader extends JFrame {
         this("Upload photo (jpg, png, gif, bmp)", null);
     }
 
+    
+
     /** Title-only: no callback */
     public PhotoUploader(String title) {
         this(title, null);
@@ -67,7 +69,7 @@ public class PhotoUploader extends JFrame {
         // Upload button
         uploadButton.setEnabled(false);
         uploadButton.setBackground(new Color(20, 79, 147));
-        uploadButton.setForeground(Color.BLACK);
+        uploadButton.setForeground(Color.WHITE);
         uploadButton.setFont(new Font("Arial", Font.BOLD, 16));
         uploadButton.setFocusPainted(false);
         uploadButton.addActionListener(e -> {
