@@ -1,8 +1,10 @@
 package mypackage.controller;
 
 import javax.swing.*;
-import java.awt.*;
+import java.util.concurrent.ExecutionException;
 import mypackage.model.User;
+import mypackage.view.allJournals;
+import mypackage.view.favorites;
 import mypackage.view.profile;
 
 public class ProfileController {
