@@ -4,6 +4,9 @@ import mypackage.model.City;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
 import java.awt.*;
 
 
@@ -105,10 +108,37 @@ public class journalEntry extends JPanel {
         // Body
         panel.add(createLabel("Journal Entry:"));
         panel.add(Box.createVerticalStrut(5));
-        bodyArea.setFont(new Font("Arial", Font.PLAIN, 18));
+        bodyArea.setFont(new Font("Arial", Font.PLAIN, 27));
         bodyArea.setBackground(lightGray);
         bodyArea.setLineWrap(true);
         bodyArea.setWrapStyleWord(true);
+        bodyArea.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                checkLength();
+                repaint();
+            }
+            
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                checkLength();
+                repaint();
+            }
+            
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                checkLength();
+            }
+            
+            private void checkLength() {
+                if (bodyArea.getText().length() > 500) {
+                    SwingUtilities.invokeLater(() -> {
+                        String st=bodyArea.getText().substring(0,500);
+                        bodyArea.setText(st);
+                    });
+                }
+            }
+        });
         JScrollPane scroll = new JScrollPane(bodyArea);
         scroll.setPreferredSize(new Dimension(0, 200));
         scroll.setMaximumSize(new Dimension(Integer.MAX_VALUE, 300));
