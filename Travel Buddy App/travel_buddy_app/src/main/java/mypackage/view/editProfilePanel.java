@@ -110,25 +110,6 @@ public class editProfilePanel extends JPanel {
         deleteAccountButton.setPreferredSize(new Dimension(200, 40));
         panel.add(deleteAccountButton);
 
-        // Edit Picture button
-        editPhotoButton = new RoundedButton("Edit Picture", 20);
-        editPhotoButton.setFont(new Font("Arial", Font.BOLD, 20));
-        editPhotoButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        editPhotoButton.setBackground(darkBlue);
-        editPhotoButton.setForeground(Color.WHITE);
-        editPhotoButton.setPreferredSize(new Dimension(20, 30));
-        editPhotoButton.addActionListener(e -> {
-            JFrame frame = new PhotoUploader(filePath ->{
-                try {
-                    user.setProfilePic(filePath);
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-            });
-        });
-        informationPanel.add(editPhotoButton);
-        informationPanel.add(Box.createVerticalStrut(20));
-
         return panel;
     }
 
@@ -179,7 +160,13 @@ public class editProfilePanel extends JPanel {
         editPhotoButton.setForeground(Color.WHITE);
         editPhotoButton.setPreferredSize(new Dimension(20, 30));
         editPhotoButton.addActionListener(e -> {
-            // TODO: open PhotoUploader and update user’s photoURL
+            JFrame frame = new PhotoUploader(filePath ->{
+                try {
+                    user.setProfilePic(filePath);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            });
         });
         informationPanel.add(editPhotoButton);
         informationPanel.add(Box.createVerticalStrut(20));
