@@ -6,6 +6,7 @@ import com.google.cloud.storage.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -33,7 +34,12 @@ public class StorageService {
             .setContentType(contentType)
             .build();
         storage.create(blobInfo, bytes);
-        return String.format("https://storage.googleapis.com/%s/%s", bucketName, storagePath);
+        String encodedPath = URLEncoder.encode(storagePath, "UTF-8");
+        return String.format(
+            "https://firebasestorage.googleapis.com/v0/b/%s/o/%s?alt=media",
+            bucketName,
+            encodedPath
+        );
     }
 
 

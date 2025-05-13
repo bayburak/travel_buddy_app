@@ -6,11 +6,12 @@ import mypackage.model.User;
 import mypackage.view.profile;
 
 public class ProfileController {
+
+    JFrame host = new JFrame();
     public void open(JFrame host) 
     {
         SwingUtilities.invokeLater(() -> {
-            host.setVisible(false);
-
+            this.host = host;
             JFrame profileFrame = new JFrame("Your Profile");
             profileFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             profileFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -24,8 +25,7 @@ public class ProfileController {
             });
 
             profilePanel.getEditProfileButton().addActionListener(e -> {
-                profileFrame.setVisible(false);
-                new editProfileController(profileFrame, currentUser).open();
+                new editProfileController(profileFrame, currentUser, host).open();
             });
 
             profileFrame.setContentPane(profilePanel);
@@ -35,8 +35,13 @@ public class ProfileController {
             profileFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
             profileFrame.validate();
             profileFrame.toFront();
-            profileFrame.requestFocus();
             profileFrame.setVisible(true);
+            host.setVisible(false);
         });
+    }
+
+    public JFrame getHost()
+    {
+        return host;
     }
 }

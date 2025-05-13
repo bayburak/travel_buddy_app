@@ -20,7 +20,9 @@ public class genericJournalPanels extends JPanel implements ActionListener{
     int panelsWidth;
     int panelsHeight;
     static User user;
+
     User visitor;
+
     JournalEntry entry;
     static boolean isFaved;
     JButton editPhoto;
@@ -29,9 +31,11 @@ public class genericJournalPanels extends JPanel implements ActionListener{
     JButton deleteText;
     JButton deleteEntry;
 
+
     public genericJournalPanels(JournalEntry entry,User visitor) throws InterruptedException, ExecutionException {
         this.entry = entry;
         this.visitor = visitor;
+
         
         this.panelsWidth = 350;
         this.panelsHeight = 100;
@@ -41,7 +45,9 @@ public class genericJournalPanels extends JPanel implements ActionListener{
             isFaved = true;
         }
         else {
+
             isFaved = false;
+
         }
 
         JPanel menu = new JPanel();
@@ -106,6 +112,7 @@ public class genericJournalPanels extends JPanel implements ActionListener{
                     menu.removeAll();
                 }
 
+
                 //Add to favorites
                 JButton addFav = new JButton("Add/Remove Favorites");
                 addFav.setBackground(blueMenu);
@@ -120,7 +127,9 @@ public class genericJournalPanels extends JPanel implements ActionListener{
                         genericJournalPanels.toggleFollow(e,entry);
                     }
                     
+
                 });
+
 
                 //Edit photo
                 editPhoto = new JButton("Edit Photo");
@@ -130,6 +139,7 @@ public class genericJournalPanels extends JPanel implements ActionListener{
                 editPhoto.setForeground(Color.WHITE);
                 editPhoto.setFont(menuText);
 
+
                 //Delete photo
                 deletePhoto = new JButton("Delete Photo");
                 deletePhoto.setBackground(blueMenu);
@@ -137,6 +147,7 @@ public class genericJournalPanels extends JPanel implements ActionListener{
                 deletePhoto.setFocusPainted(false);
                 deletePhoto.setForeground(Color.WHITE);
                 deletePhoto.setFont(menuText);
+
 
                 //Edit text
                 editText = new JButton("Edit Text");
@@ -146,6 +157,7 @@ public class genericJournalPanels extends JPanel implements ActionListener{
                 editText.setForeground(Color.WHITE);
                 editText.setFont(menuText);
 
+
                 //Delete text
                 deleteText = new JButton("Delete Text");
                 deleteText.setBackground(blueMenu);
@@ -153,6 +165,7 @@ public class genericJournalPanels extends JPanel implements ActionListener{
                 deleteText.setFocusPainted(false);
                 deleteText.setForeground(Color.WHITE);
                 deleteText.setFont(menuText);
+
 
                 //Delete Entry
                 deleteEntry = new JButton("Delete Entry");
@@ -209,6 +222,6 @@ public class genericJournalPanels extends JPanel implements ActionListener{
     public JButton getDeletePhotoBtn() {return deletePhoto;}
     public JButton getEditTextBtn() {return editText;}
     public JButton getDeleteEntryBtn() {return deleteEntry;}
-}
+
     
 }

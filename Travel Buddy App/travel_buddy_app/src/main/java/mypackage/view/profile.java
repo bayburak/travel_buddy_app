@@ -50,11 +50,15 @@ public class profile extends JPanel {
         panel.setBackground(darkBlue);
         panel.setPreferredSize(new Dimension(0, 70)); // height = 70
 
-        backButton = new JButton(" ←");
+        // Back Button
+        backButton = new JButton("←");
         backButton.setFont(new Font("Arial", Font.BOLD, 50));
         backButton.setForeground(Color.WHITE);
-        backButton.setBorder(BorderFactory.createEmptyBorder());
+        backButton.setBackground(Color.blue);
         backButton.setContentAreaFilled(false);
+        backButton.setBorder(BorderFactory.createEmptyBorder());
+        backButton.setFocusPainted(false);
+        backButton.setBounds(10, 0, 100, 60);
         // default no-op; external code can attach via getBackButton()
         backButton.addActionListener((ActionEvent e) -> { /* TODO: navigate back */ });
 

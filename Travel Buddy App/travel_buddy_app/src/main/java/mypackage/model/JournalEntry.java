@@ -42,7 +42,7 @@ public class JournalEntry {
         JournalDatabaseService.incrementNumberOfEntries();
         this.entryID = JournalDatabaseService.NumberOfEntries;
 
-        this.photoURL = "";
+        this.photoURL = null;
     }
 
  
@@ -95,13 +95,14 @@ public class JournalEntry {
     public void setPhoto(String filePath) throws IOException {
         String storagePath = "entry_photos/entry" + this.getEntryID();
         this.photoURL = StorageService.uploadFile(filePath, storagePath);
+        this.updateEntry(title,content, publicEntry);
         
     }
     
     public void removePhoto(String fileName) {
         String storagePath = "entry_photos/entry" + this.getEntryID();
         StorageService.deleteFile(storagePath);
-        this.photoURL = "";
+        this.photoURL = null;
     }
 
     public void updateEntry(String title, String content, boolean isPublic) {

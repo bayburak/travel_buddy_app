@@ -47,6 +47,7 @@ public class explore extends JPanel implements ActionListener {
         backButton.setFont(new Font("Arial", Font.BOLD, 50));
         backButton.setForeground(Color.WHITE);
         backButton.setBackground(blue);
+        backButton.setContentAreaFilled(false);
         backButton.setBorder(BorderFactory.createEmptyBorder());
         backButton.setFocusPainted(false);
         backButton.setBounds(10, 0, 100, 60);

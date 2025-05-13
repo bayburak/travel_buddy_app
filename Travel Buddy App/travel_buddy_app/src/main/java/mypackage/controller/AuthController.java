@@ -62,7 +62,6 @@ public class AuthController {
                 return;
             }
 
-            loginView.dispose();
             Session.setCurrentUser(user);
 
             JFrame mapFrame = new JFrame("Map Menu");
@@ -71,6 +70,7 @@ public class AuthController {
             new MapController(mapFrame);
             mapFrame.setVisible(true);
 
+            loginView.dispose();
         }
         catch (IOException ex)
         {

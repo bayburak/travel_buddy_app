@@ -157,7 +157,13 @@ public class editProfilePanel extends JPanel {
         editPhotoButton.setForeground(Color.WHITE);
         editPhotoButton.setPreferredSize(new Dimension(20, 30));
         editPhotoButton.addActionListener(e -> {
-            // TODO: open PhotoUploader and update user’s photoURL
+            JFrame frame = new PhotoUploader(filePath ->{
+                try {
+                    user.setProfilePic(filePath);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            });
         });
         informationPanel.add(editPhotoButton);
         informationPanel.add(Box.createVerticalStrut(20));
