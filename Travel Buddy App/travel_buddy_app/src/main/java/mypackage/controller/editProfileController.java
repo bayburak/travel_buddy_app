@@ -2,18 +2,24 @@ package mypackage.controller;
 
 import javax.swing.*;
 import mypackage.model.User;
+import mypackage.service.UserDatabaseService;
 import mypackage.view.editProfilePanel;
 import mypackage.view.login;
+import mypackage.view.newPassword;
 import mypackage.view.signup;
 
 public class editProfileController
 {
     private final JFrame profileFrame;
-    private final User   user;
+    private final User user;
+    private final JFrame host;
 
-    public editProfileController(JFrame profileFrame, User user) {
+    
+
+    public editProfileController(JFrame profileFrame, User user, JFrame host) {
         this.profileFrame = profileFrame;
         this.user = user;
+        this.host = host;
     }
 
     public void open() {
@@ -27,17 +33,29 @@ public class editProfileController
 
             editProfilePanel editPanel = new editProfilePanel(user);
 
-            editPanel.getBackButton().addActionListener(e -> {
+            editPanel.getBackButton().addActionListener(e -> { //back button
                 editFrame.dispose();
+                profileFrame.repaint();
                 profileFrame.setVisible(true);
             });
 
-            editPanel.getSaveButton().addActionListener(e -> {
+            editPanel.getSaveButton().addActionListener(e -> { //save button
+
+                String name = editPanel.getNameSurname().getText();
+                String userName = editPanel.getUsernameField().getText();
+                String Email = editPanel.getEmailField().getText();
+                String aboutMe = editPanel.getAboutMeTextArea().getText();
+
+                Session.getCurrentUser().updateUserProfile(name, aboutMe, userName, Email);
                 editFrame.dispose();
-                profileFrame.setVisible(true);
+                host.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                host.toFront();
+                host.requestFocus();
+                host.setVisible(true);
+                profileFrame.dispose();
             });
 
-            editPanel.getDeleteAccountButton().addActionListener( e -> {
+            editPanel.getDeleteAccountButton().addActionListener( e -> { //delete account
                 Object[] options = {"Yes", "No"};
                 int option = JOptionPane.showOptionDialog(
                     null,
@@ -58,8 +76,18 @@ public class editProfileController
                     signupView.setVisible(false);
                     loginView.setVisible(true);
                     new AuthController(loginView, signupView);
-
                 }
+            });
+
+            editPanel.getChangePasswordButton().addActionListener(e -> { //change password button
+                newPassword pass = new newPassword();
+                pass.getConfirmButton().addActionListener((a -> { //confirm password button
+                    String passWord = pass.getTxtCode().getText();
+                    User user = Session.getCurrentUser();
+                    user.setPassword(passWord);
+                    UserDatabaseService.updateUserProfile(user);
+                    pass.dispose();
+                }));
             });
 
             editFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -68,6 +96,8 @@ public class editProfileController
             editFrame.setVisible(true);
         });
     }
+
+
     /*
      * leaveWithoutSaving
                 JOptionPane.showMessageDialog(

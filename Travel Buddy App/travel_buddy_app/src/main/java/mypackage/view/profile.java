@@ -54,7 +54,7 @@ public class profile extends JPanel {
         backButton = new JButton("←");
         backButton.setFont(new Font("Arial", Font.BOLD, 50));
         backButton.setForeground(Color.WHITE);
-        backButton.setBackground(blue);
+        backButton.setBackground(Color.blue);
         backButton.setContentAreaFilled(false);
         backButton.setBorder(BorderFactory.createEmptyBorder());
         backButton.setFocusPainted(false);
