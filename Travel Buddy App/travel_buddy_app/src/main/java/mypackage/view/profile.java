@@ -9,6 +9,9 @@ import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
 
 public class profile extends JPanel {
     private final User user;
@@ -72,25 +75,27 @@ public class profile extends JPanel {
         info.setBackground(Color.WHITE);
         info.setPreferredSize(new Dimension(250, -1));
 
-        // Load or placeholder image
-        BufferedImage rawImage = null;
-        File f = new File(user.getPhotoURL());
-        if (f.exists()) {
-            try {
-                rawImage = ImageIO.read(f);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-        if (rawImage == null) {
-            rawImage = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
-            Graphics2D g = rawImage.createGraphics();
-            g.setColor(Color.LIGHT_GRAY);
-            g.fillRect(0, 0, 200, 200);
-            g.dispose();
-        }
+        // PFP
+        BufferedImage image = null;
+        try {
+            URI uri = URI.create( user.getPhotoURL());
+            URL url = uri.toURL();  // Preferred over new URL(String)
+            
+            try (InputStream in = url.openStream()) {
+                
+                image = ImageIO.read(in);
 
-        BufferedImage circ = RoundImage.makePerfectCircle(rawImage, 200, Color.GRAY, 1);
+                if (image != null) {
+                    System.out.println("Image successfully read!");
+                } else {
+                    System.out.println("Failed to decode the image.");
+                }
+            }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }        
+
+        BufferedImage circ = RoundImage.makePerfectCircle(image, 200, Color.GRAY, 1);
         profilePictureLabel = new JLabel(new ImageIcon(circ));
         profilePictureLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         profilePictureLabel.setPreferredSize(new Dimension(250, 250));
@@ -202,8 +207,7 @@ public class profile extends JPanel {
     // Getters for all buttons
 
     /** Back (return) button in the top section */
-    public JButton getBackButton()
-     {
+    public JButton getBackButton() {
         return backButton;
     }
 

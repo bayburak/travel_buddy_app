@@ -12,6 +12,10 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
@@ -113,34 +117,32 @@ public class editProfilePanel extends JPanel {
         informationPanel.setPreferredSize(new Dimension(400, 400));
         informationPanel.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 0));
 
-        // 1) Attempt to load the user’s photo
-        String path = user.getPhotoURL();
-        File imgFile = new File(path);
-        BufferedImage bufferedImage = null;
-        if (imgFile.exists()) {
-            try {
-                bufferedImage = ImageIO.read(imgFile);
+
+        BufferedImage image = null;
+        //PFP
+        try {
+            URI uri = URI.create( user.getPhotoURL());
+            URL url = uri.toURL();  // Preferred over new URL(String)
+            
+            try (InputStream in = url.openStream()) {
+                
+                image = ImageIO.read(in);
+
+                if (image != null) {
+                    System.out.println("Image successfully read!");
+                } else {
+                    System.out.println("Failed to decode the image.");
+                }
+            }
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else {
-            System.err.println("EDIT-PROFILE: image not found at " + imgFile.getAbsolutePath());
-        }
-
-        // 2) Fallback placeholder if load failed
-        if (bufferedImage == null) {
-            int size = 250;
-            bufferedImage = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
-            Graphics2D g2 = bufferedImage.createGraphics();
-            g2.setColor(Color.LIGHT_GRAY);
-            g2.fillRect(0, 0, size, size);
-            g2.dispose();
-        }
+        //
 
         // 3) Now it’s safe to circle‐crop
-        BufferedImage roundedImage =
-            RoundImage.makePerfectCircle(bufferedImage, 250, Color.GRAY, 1);
-
+        BufferedImage roundedImage = (RoundImage.makePerfectCircle(image, 200,Color.GRAY,1));
+        
+        
         JLabel profilePictureLabel = new JLabel(new ImageIcon(roundedImage));
         profilePictureLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         profilePictureLabel.setPreferredSize(new Dimension(300, 300));
