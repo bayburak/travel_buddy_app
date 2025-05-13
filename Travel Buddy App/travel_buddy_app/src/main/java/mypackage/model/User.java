@@ -120,26 +120,26 @@ public class User {
         
     }
 
-    public List<User> getFollowersObjectArray() throws InterruptedException, ExecutionException{
+    public List<User> FollowersObjectArray() throws InterruptedException, ExecutionException{
         return UserDatabaseService.getFollowers(this.getUserID());
     }
-    public List<User> getFollowingsObjextArray() throws InterruptedException, ExecutionException{
+    public List<User> FollowingsObjextArray() throws InterruptedException, ExecutionException{
         return UserDatabaseService.getFollowing(this.userID);
     }
 
     
 
-    public List<JournalEntry> getSavedEntries() throws InterruptedException, ExecutionException{
+    public List<JournalEntry> SavedEntries() throws InterruptedException, ExecutionException{
         return JournalDatabaseService.getSavedEntriesForUser(this.getUserID());
     }
 
     
-    public List<JournalEntry> getUserEntries() throws InterruptedException, ExecutionException {
+    public List<JournalEntry> UserEntries() throws InterruptedException, ExecutionException {
         
         return JournalDatabaseService.getEntriesByUser(this.userID);
     }
   
-    public List<JournalEntry> getPublicEntries() throws InterruptedException, ExecutionException {
+    public List<JournalEntry> PublicEntries() throws InterruptedException, ExecutionException {
         
         return JournalDatabaseService.getPublicEntries(this.getUserID());
     }
