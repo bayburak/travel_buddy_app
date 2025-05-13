@@ -56,7 +56,12 @@
         
         public static void deleteJournalEntry(String entryId, Runnable callback) {
 
-            StorageService.deleteFile("entry_pictures/entry" + entryId);
+            String filePath = "entry_pictures/entry" + entryId;
+
+            if(StorageService.fileExists(filePath)){
+                StorageService.deleteFile(filePath);
+            }
+            
             
             database.child("journalEntries").child(entryId).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override

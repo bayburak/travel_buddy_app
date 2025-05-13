@@ -45,9 +45,12 @@ public class UserDatabaseService extends DatabaseService {
 
     public static void deleteUser(String userID) {
 
+        String filePath = "profile_picture/user" + userID ;
+        if(StorageService.fileExists(filePath)){
+            StorageService.deleteFile(filePath);
+        }
         
-        
-        StorageService.deleteFile("profile_picture/user" + userID );
+       
         DatabaseReference entriesReference = database.child("users").child(userID).child("entries");
         
         

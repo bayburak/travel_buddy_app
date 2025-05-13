@@ -2,7 +2,6 @@ package mypackage.service;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.*;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -24,7 +23,11 @@ public class StorageService {
    }
 
     
-
+    public static boolean fileExists(String storagePath) {
+        Blob blob = storage.get(BlobId.of(bucketName, storagePath));
+        return blob != null && blob.exists();
+    }
+    
     
     public static String uploadFile(String localFilePath, String storagePath) throws IOException {
         byte[] bytes = Files.readAllBytes(Paths.get(localFilePath));
