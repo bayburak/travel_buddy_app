@@ -135,8 +135,9 @@ public class MapController {
 
     private void renderPopup(City city, Point mapPt) throws InterruptedException, ExecutionException {
         popupPanel = new cityPanel(city);
-        popupPanel.addEntryListener(evt -> JournalController.createForm(host, city));
-        popupPanel.addShowEntriesListener(evt -> ShowCityJournalController.createForm(host, city));
+        popupPanel.addEntryListener(evt -> JournalController.createForm(host, city,this));
+        popupPanel.addShowEntriesListener(evt -> ShowCityJournalController.createForm(host, city)); 
+
         Point pnl = SwingUtilities.convertPoint(mapInstance, mapPt, mainView);
         popupPanel.setBounds(pnl.x, pnl.y, 300, 100);
         mainView.add(popupPanel);
@@ -144,7 +145,7 @@ public class MapController {
         mainView.repaint();
     }
 
-    private void closePopup() {
+    public void closePopup() {
         if (popupPanel != null) {
             mainView.remove(popupPanel);
             mainView.repaint();

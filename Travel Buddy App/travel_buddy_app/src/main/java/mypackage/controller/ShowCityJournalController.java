@@ -35,5 +35,5 @@ public final class ShowCityJournalController {
             e.printStackTrace();
             JOptionPane.showMessageDialog(mainWindow, "Error loading city entries.", "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }
+        }
 }

@@ -2,11 +2,16 @@ package mypackage.controller;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.security.spec.ECField;
 import java.util.concurrent.ExecutionException;
 
 import mypackage.model.User;
 import mypackage.view.explore;
 import mypackage.view.findTravelbuddy;
+import mypackage.view.genericUserPanel;
+import mypackage.view.otherProfile;
 import mypackage.view.profile;
 
 public class FindBuddyController 
@@ -20,10 +25,8 @@ public class FindBuddyController
             explore.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             explore.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
-            User currentUser = Session.getCurrentUser();
-            findTravelbuddy findTravelbuddyPanel = null;
 
-            findTravelbuddyPanel = new findTravelbuddy();
+            findTravelbuddy findTravelbuddyPanel = new findTravelbuddy();
 
             findTravelbuddyPanel.getBackButton().addActionListener(e -> {
                 explore.dispose();
@@ -32,13 +35,15 @@ public class FindBuddyController
 
             explore.setContentPane(findTravelbuddyPanel);
             explore.invalidate();
-            explore.pack();
+            explore.toFront();
             explore.setLocationRelativeTo(null);
             explore.setExtendedState(JFrame.MAXIMIZED_BOTH);
             explore.validate();
             explore.toFront();
             explore.requestFocus();
             explore.setVisible(true);
+
+
         });
     }
 }

@@ -19,7 +19,12 @@ public class ProfileController {
             profileFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
             User currentUser = Session.getCurrentUser();
-            profile profilePanel = new profile(currentUser);
+            profile profilePanel = null;
+            try {
+                profilePanel = new profile(currentUser);
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
 
             profilePanel.getBackButton().addActionListener(e -> {
                 profileFrame.dispose();
@@ -30,10 +35,18 @@ public class ProfileController {
                 new editProfileController(profileFrame, currentUser, host).open();
             });
 
+            User user = profilePanel.getUser();
+
             JFrame displayJournalEntries = new JFrame();
             profilePanel.getJournalEntriesButton().addActionListener(e -> {
                 try {
-                    allJournals entries = new allJournals(currentUser, false);
+                    allJournals entries;
+                    if (Session.getCurrentUserID().equals(user.getUserID())) {
+                        entries = new allJournals(currentUser, false);
+                    }
+                    else {
+                        entries = new allJournals(currentUser, true);
+                    }
                     entries.getBackButton().addActionListener(a -> {
                         displayJournalEntries.dispose();
                         profileFrame.setVisible( true);

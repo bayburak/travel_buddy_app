@@ -14,7 +14,7 @@ public final class JournalController
 {
     private JournalController() {}
 
-    public static void createForm(JFrame mainWindow, City preselectedCity)
+    public static void createForm(JFrame mainWindow, City preselectedCity, MapController myClass)
     {
         Container previousView = mainWindow.getContentPane();
 
@@ -56,6 +56,7 @@ public final class JournalController
                 mainWindow.setContentPane(previousView);
                 mainWindow.revalidate();
                 mainWindow.repaint();
+                myClass.closePopup();
             } else {
                 System.out.println("Validation failed; entry not saved.");
             }
