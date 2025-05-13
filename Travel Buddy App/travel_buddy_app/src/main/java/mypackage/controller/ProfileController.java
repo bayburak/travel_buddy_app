@@ -46,6 +46,25 @@ public class ProfileController {
                     e1.printStackTrace();
                 }
             });
+            //FavouritesButton 
+            JFrame displayFavorites = new JFrame();
+            profilePanel.getFavouritesButton().addActionListener(e -> {
+                try {
+                    favorites favEntries = new favorites(currentUser);
+                    favEntries.getBackButton().addActionListener(a -> {
+                        displayFavorites.dispose();
+                        profileFrame.setVisible( true);
+                    });
+                    displayFavorites.add( favEntries);
+                    displayFavorites.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                    displayFavorites.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE);
+                    displayFavorites.setVisible(true);
+                    host.setVisible(false);
+                    profileFrame.setVisible( false);
+                } catch (InterruptedException | ExecutionException e1) {
+                    e1.printStackTrace();
+                }
+            });
             
             profileFrame.setContentPane(profilePanel);
             profileFrame.invalidate();
