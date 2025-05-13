@@ -72,7 +72,9 @@ public class genericJournalPanels extends JPanel implements ActionListener{
         entryArea.setForeground(Color.BLACK);
         entryArea.setFont(new Font("Arial",Font.PLAIN,24));
         entryArea.setBackground(null);
-        entryArea.setBounds(10,10,900,200);
+        entryArea.setBounds(20, 20, 880, 180);
+        entryArea.setLineWrap(true);
+        entryArea.setWrapStyleWord(true);
         entryPanel.add(entryArea);
 
         //Menu Button
