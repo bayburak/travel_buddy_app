@@ -45,6 +45,7 @@ public class genericJournalPanels extends JPanel implements ActionListener {
     JLabel noOfFavs;
     JTextArea title;
     JTextArea entryArea;
+    User currentUser;
 
     public genericJournalPanels(JournalEntry entry, User visitor, JPanel parent) throws InterruptedException, ExecutionException {
         this.entry = entry;
@@ -53,6 +54,7 @@ public class genericJournalPanels extends JPanel implements ActionListener {
         this.panelsWidth = 350;
         this.panelsHeight = 100;
 
+        currentUser = Session.getCurrentUser();
         user = User.getUserByID(entry.getAuthorID());
         if (user.SavedEntries().contains(entry)) {
             isFaved = true;
@@ -328,7 +330,7 @@ public class genericJournalPanels extends JPanel implements ActionListener {
             
             
 
-            if (user.getUserID().equals(visitor.getUserID())) {
+            if (currentUser.getUserID().equals(visitor.getUserID())) {
                 menu.removeAll();
                 menu.setLayout(new GridLayout(6,1));
                 menu.setBounds(70,4,200,250);
