@@ -364,14 +364,14 @@ public class genericJournalPanels extends JPanel implements ActionListener {
     public void manageFavs() {
         isFaved = !isFaved;
         if (isFaved) {
-            user.addToSaved(entry.getEntryID());
+            currentUser.addToSaved(entry.getEntryID());
             JOptionPane.showMessageDialog(null, "Successfully added to favorites", null, JOptionPane.INFORMATION_MESSAGE);
             addFav.setText("");
             addFav.setText("Remove from Favorites");  
             this.repaint();      
         }
         else {
-            user.addToSaved(entry.getEntryID());
+            currentUser.removeFromSaved(entry.getEntryID());
             JOptionPane.showMessageDialog(null, "Successfully removed from favorites", null, JOptionPane.INFORMATION_MESSAGE);
             addFav.setText("");
             addFav.setText("Add to Favorites"); 
