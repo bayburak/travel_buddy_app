@@ -56,7 +56,7 @@ public class genericJournalPanels extends JPanel implements ActionListener {
 
         currentUser = Session.getCurrentUser();
         user = User.getUserByID(entry.getAuthorID());
-        if (user.SavedEntries().contains(entry)) {
+        if (currentUser.SavedEntries().contains(entry)) {
             isFaved = true;
         } else {
             isFaved = false;
