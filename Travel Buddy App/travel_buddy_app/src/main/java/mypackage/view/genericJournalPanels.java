@@ -330,7 +330,7 @@ public class genericJournalPanels extends JPanel implements ActionListener {
             
             
 
-            if (currentUser.getUserID().equals(visitor.getUserID())) {
+            if (currentUser.getUserID().equals(user.getUserID())) {
                 menu.removeAll();
                 menu.setLayout(new GridLayout(6,1));
                 menu.setBounds(70,4,200,250);
