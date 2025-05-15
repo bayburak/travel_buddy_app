@@ -1,6 +1,4 @@
-// ────────────────────────────────────────────────────────────────
-//  MapService.java  (package: mypackage.service)
-// ────────────────────────────────────────────────────────────────
+
 package mypackage.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -19,13 +17,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Loads <code>trCities.json</code> from the runtime class‑path and returns a
- * <i>tile‑less</i> {@link JXMapViewer} that paints Turkey’s 81 provinces.
- */
+
 public class MapService {
 
-    /* ═════════════════════════ geojson → memory ═════════════════════════ */
     public static List<City> readCities() throws IOException {
         List<City> list = new ArrayList<>();
         InputStream in = MapService.class.getResourceAsStream("/trCities.json");
@@ -43,7 +37,7 @@ public class MapService {
 
             if ("Polygon".equals(type)) {
                 list.add(makeCity(geom.get("coordinates").get(0), name, id, gf));
-            } else { // MultiPolygon
+            } else { 
                 for (JsonNode poly : geom.get("coordinates"))
                     list.add(makeCity(poly.get(0), name, id, gf));
             }
@@ -57,7 +51,6 @@ public class MapService {
         return new City(name, gf.createPolygon(gf.createLinearRing(coords.toArray(Coordinate[]::new))), id);
     }
 
-    /* ═══════════════════════ painter + viewer ═══════════════════════════ */
     private static class OutlinePainter implements Painter<JXMapViewer> {
         @Override public void paint(Graphics2D g, JXMapViewer map, int w, int h) {
             Graphics2D g2 = (Graphics2D) g;
@@ -84,9 +77,7 @@ public class MapService {
         }
     }
 
-    /**
-     * Returns a fully initialised <b>static</b> JXMapViewer (no online tiles).
-     */
+    
     public static JXMapViewer getMapPanel() throws IOException {
         if (City.allCities == null) City.initializeCitys();
 
