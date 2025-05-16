@@ -1,47 +1,27 @@
+***TRAVEL BUDDY APP***
 
-model/          Represents the app's data structure
+Travel Buddy app is a desktop application that is designed for travelers to document and organize their experiences as well as explore other users entries.
 
-    -User.java
-        Represents the users of the app. This class mainly works with DatabaseService.java to handle tasks realted to users and stores personal information.
-    -JournalEntry.java
-        Represnts posts made by users. This class also works in unison with "DatabaseService.java". 
-    -City.java
-        Represents Turkey's cities.
+## Features
+- JournalEntries on Cites with a photo and visibility options
+- Interactive Map of Turkey 
+- Real-time Database
+- Cloud Storage
+- User profiles
+- Explore top entries
+- Favorite the entries you liked
+- Password recovery
 
+  ## Tech Stack & Dependencies
+- Java 21, Maven  
+- UI & Map: Swing, JXMapViewer 2.6, LocationTech JTS 1.19.0  
+- Database & Storage: firebase: version 9.2.0, google-cloud-storage:version 2.10.0  
+- Email: Jakarta Mail
+- JSON reading: Jackson 2.15.2 (core, databind, annotations)  
+- Logging: SLF4J NOP  
 
-
-
-
-utils/          Contains common utilities
-
-        -Validator.java
-    Validates emails, usernames, passwords, required fields, etc.
-
-        -FirebasePaths.java
-    Stores all Firebase DB path strings in one place to avoid hardcoding.
-
-
-
-
-services/
-
-        -DatabaseService.java
-
-    Reads/writes data to Realtime Database.
-    Used for journal entries, user profiles, maps, etc.
-
-        -StorageService.java
-
-    Uploads and downloads images (profile pics, journal photos).
-    Uses Firebase Storage.
-
-        -EmailService.java
-    Handles tasks related to sending emails (password recovery, welcome message).
-
-        -MapService
-    Handles the map on teh main page 
-
-
-controller/     Handles the logic behind how the GUI should respond, acts as a bridge between  view and modal classes.
-view/           Contains GUI elements, does not contain logic.
-resources/      Locally stores images or files taht are used within the code 
+  ## Execution isntructions
+- Clone teh repository and run the code.
+  --Prerequisites
+- A Google service account JSON key for Admin SDK  
+- Internet access for the map & Firebase
